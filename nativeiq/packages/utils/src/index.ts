@@ -1,5 +1,18 @@
 export function formatRelativeTime(value: string | number | Date): string {
-  const date = typeof value === "string" || typeof value === "number" ? new Date(value) : value;
+  // Guard against undefined/null and invalid dates to prevent runtime errors
+  if (value === undefined || value === null) {
+    return "just now";
+  }
+
+  const date =
+    typeof value === "string" || typeof value === "number"
+      ? new Date(value)
+      : (value as Date);
+
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
+    return "just now";
+  }
+
   const diff = date.getTime() - Date.now();
   const minutes = Math.round(Math.abs(diff) / 60000);
   if (minutes < 1) return "just now";

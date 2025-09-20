@@ -4,62 +4,62 @@ export const insights: Insight[] = [
   {
     id: "insight-ops-001",
     type: "decision",
-    title: "Prioritize AI triage for Tier-2 escalations",
+    title: "Customer onboarding needs simplification",
     summary:
-      "Slack volume triggered risk thresholds for Tier-2 customers. Recommend routing through MCP Tasks with on-call override.",
-    confidence: 0.94,
+      "Lost 3 trial customers this week citing complex onboarding. Consider creating a simplified setup flow or video tutorials to reduce friction.",
+    confidence: 0.89,
     impact: "high",
-    owner: "OPS On-Call",
+    owner: "Operations Lead",
     sources: [
       {
-        label: "#cs-escalations thread 11:24",
-        url: "https://slack.com/app_redirect?channel=cs-escalations",
+        label: "Customer feedback survey",
+        url: "#customer-feedback",
         timestamp: new Date().toISOString()
       },
       {
-        label: "PagerDuty incident 9812",
-        url: "https://pagerduty.com/incidents/9812",
+        label: "Support ticket analysis",
+        url: "#support-tickets",
         timestamp: new Date().toISOString()
       }
     ],
     suggestedActions: [
-      { id: "action-approve", label: "Approve Auto-Triage", intent: "primary" },
-      { id: "action-doc", label: "Open Playbook" }
+      { id: "action-simplify", label: "Create Simple Flow", intent: "primary" },
+      { id: "action-video", label: "Record Tutorial" }
     ]
   },
   {
     id: "insight-risk-014",
     type: "risk",
-    title: "SLA breach risk: ACME renewal approvals slowing",
+    title: "TechStart renewal at risk - 30% of MRR",
     summary:
-      "Approvals median time moved to 48m (target 15m). 3 high-value renewals need director confirmation before cutoff.",
-    confidence: 0.87,
+      "Major client requesting 40% discount to match competitor pricing. Need to decide on retention strategy vs. letting them churn.",
+    confidence: 0.92,
     impact: "critical",
-    owner: "Revenue Ops",
+    owner: "Founder & CEO",
     sources: [
       {
-        label: "Approvals queue",
-        url: "https://nativeiq.ai/approvals",
+        label: "Sales conversation notes",
+        url: "#sales-notes",
         timestamp: new Date().toISOString()
       }
     ],
     suggestedActions: [
-      { id: "action-ping", label: "Ping Approver", intent: "primary" },
-      { id: "action-review", label: "Review Thread" }
+      { id: "action-negotiate", label: "Counter Offer", intent: "primary" },
+      { id: "action-value", label: "Present Value Prop" }
     ]
   },
   {
     id: "insight-summary-022",
     type: "summary",
-    title: "Summary: Week in AI Nudges",
-    summary: "18 nudges auto-resolved. Average response time down 22%. Top topics: onboarding, billing visibility, Slack requests.",
-    confidence: 0.78,
-    impact: "medium",
-    owner: "Automation Guild",
+    title: "Cash flow concerns need attention",
+    summary: "Current burn rate gives us 3.2 months runway. Need to focus on revenue growth or cost reduction to extend runway.",
+    confidence: 0.85,
+    impact: "high",
+    owner: "Founder & CEO",
     sources: [
       {
-        label: "Weekly digest",
-        url: "https://nativeiq.ai/digest",
+        label: "Financial dashboard",
+        url: "#financials",
         timestamp: new Date().toISOString()
       }
     ]
@@ -69,55 +69,55 @@ export const insights: Insight[] = [
 export const tasks: Task[] = [
   {
     id: "task-001",
-    title: "Review ACME renewal blocker",
-    assignee: "Jordan Quinn",
+    title: "Negotiate TechStart renewal terms",
+    assignee: "Jordan Lee",
     state: "in_progress",
     dueAt: new Date(Date.now() + 1000 * 60 * 60 * 4).toISOString(),
     priority: "p0",
     sourceInsightId: "insight-risk-014",
-    slackPermalink: "https://slack.com/app_redirect?channel=cs-acme&message=xyz"
+    slackPermalink: "#sales-channel"
   },
   {
     id: "task-002",
-    title: "Ship explainability copy update",
-    assignee: "Mira Patel",
+    title: "Create simplified onboarding flow",
+    assignee: "Taylor Brooks",
     state: "open",
     dueAt: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(),
     priority: "p1",
-    sourceInsightId: "insight-summary-022"
+    sourceInsightId: "insight-ops-001"
   },
   {
     id: "task-003",
-    title: "Enable rollout flag for auto triage",
-    assignee: "Feature Flag Bot",
-    state: "blocked",
+    title: "Review monthly expenses for cost cuts",
+    assignee: "Alex Martinez",
+    state: "open",
     dueAt: new Date(Date.now() + 1000 * 60 * 60 * 2).toISOString(),
     priority: "p0",
-    sourceInsightId: "insight-ops-001"
+    sourceInsightId: "insight-summary-022"
   }
 ];
 
 export const approvals: Approval[] = [
   {
     id: "approval-1001",
-    summary: "Discount override for Nimbus Labs",
-    requester: "Ivy Flores",
+    summary: "Emergency marketing spend for lead gen",
+    requester: "Jordan Lee",
     requestedAt: new Date(Date.now() - 1000 * 60 * 34).toISOString(),
     status: "pending",
-    slaMinutes: 15
+    slaMinutes: 60
   },
   {
     id: "approval-1002",
-    summary: "Security review waiver — ACME renewal",
-    requester: "Ben Holt",
+    summary: "Part-time customer support hire",
+    requester: "Taylor Brooks",
     requestedAt: new Date(Date.now() - 1000 * 60 * 82).toISOString(),
     status: "pending",
-    slaMinutes: 30
+    slaMinutes: 120
   }
 ];
 
 export const slaMetrics: SlaMetric[] = [
-  { label: "Median approval time", value: 18, target: 15, unit: "minutes" as const },
-  { label: "Insight adoption", value: 0.82, target: 0.9, unit: "%" as const },
-  { label: "Automation coverage", value: 0.64, target: 0.75, unit: "%" as const }
+  { label: "Customer response time", value: 4.2, target: 2, unit: "hours" as const },
+  { label: "Monthly churn rate", value: 0.08, target: 0.05, unit: "%" as const },
+  { label: "Trial conversion rate", value: 0.18, target: 0.25, unit: "%" as const }
 ];

@@ -1,5 +1,5 @@
-import "@nativeiq/ui/styles/tokens.css";
-import "@nativeiq/ui/styles/base.css";
+import "@nativeiq/ui/src/styles/tokens.css";
+import "@nativeiq/ui/src/styles/base.css";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Providers } from "./providers";
