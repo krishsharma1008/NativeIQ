@@ -3,6 +3,54 @@
 import { useState, useRef, useEffect } from "react";
 import { GlassCard, Button, Badge } from "@nativeiq/ui";
 
+// Component to format chat messages with better styling
+function FormattedMessage({ content }: { content: string }) {
+  // Handle markdown-style formatting
+  const formatContent = (text: string) => {
+    // Split by lines and process each one
+    const lines = text.split('\n');
+    const elements: JSX.Element[] = [];
+    
+    lines.forEach((line, index) => {
+      if (line.trim() === '') {
+        elements.push(<br key={`br-${index}`} />);
+        return;
+      }
+      
+      // Handle bold text (**text**)
+      let formattedLine = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      
+      // Handle bullet points (- text)
+      if (line.trim().startsWith('- ')) {
+        elements.push(
+          <div key={index} className="message-bullet-point">
+            • {line.trim().substring(2)}
+          </div>
+        );
+      }
+      // Handle numbered lists (1. text)
+      else if (/^\d+\.\s/.test(line.trim())) {
+        elements.push(
+          <div key={index} className="message-numbered-point">
+            {line.trim()}
+          </div>
+        );
+      }
+      // Regular paragraph
+      else {
+        elements.push(
+          <p key={index} className="message-paragraph" 
+             dangerouslySetInnerHTML={{ __html: formattedLine }} />
+        );
+      }
+    });
+    
+    return elements;
+  };
+  
+  return <div className="formatted-message">{formatContent(content)}</div>;
+}
+
 interface Message {
   id: string;
   content: string;
@@ -400,7 +448,9 @@ export function ChatInterface({ className, onInsightGenerated, onUserChange, cur
                   </div>
                 )}
                 
-                <p className="chat-message__text">{message.content}</p>
+                <div className="chat-message__text">
+                  <FormattedMessage content={message.content} />
+                </div>
               </div>
             </div>
           ))}
