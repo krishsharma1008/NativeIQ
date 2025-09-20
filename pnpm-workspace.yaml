@@ -1,0 +1,5 @@
+packages:
+  - "nativeiq/apps/*"
+  - "nativeiq/packages/*"
+  - "nativeiq/services/*"
+  - "nativeiq/infra/*"

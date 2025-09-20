@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "lib": ["DOM", "DOM.Iterable", "ES2021"],
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "@nativeiq/ui": ["nativeiq/packages/ui/src"],
+      "@nativeiq/ui/*": ["nativeiq/packages/ui/src/*"],
+      "@nativeiq/types": ["nativeiq/packages/types/src"],
+      "@nativeiq/utils": ["nativeiq/packages/utils/src"]
+    }
+  }
+}
