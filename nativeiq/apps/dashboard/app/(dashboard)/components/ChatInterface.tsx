@@ -75,6 +75,7 @@ interface ChatInterfaceProps {
   className?: string;
   onInsightGenerated?: (insight: any) => void;
   onUserChange?: (user: UserProfile) => void;
+  onUserMessage?: (message: string, user: UserProfile) => void;
   currentUser?: UserProfile;
 }
 
@@ -114,7 +115,7 @@ const USER_PROFILES: UserProfile[] = [
   }
 ];
 
-export function ChatInterface({ className, onInsightGenerated, onUserChange, currentUser: propCurrentUser }: ChatInterfaceProps) {
+export function ChatInterface({ className, onInsightGenerated, onUserChange, onUserMessage, currentUser: propCurrentUser }: ChatInterfaceProps) {
   // Helper function to check if user is executive-level
   const isExecutiveUser = (designation: string): boolean => {
     const executiveDesignations = [
@@ -313,11 +314,23 @@ export function ChatInterface({ className, onInsightGenerated, onUserChange, cur
     };
 
     setMessages(prev => [...prev, newMessage]);
+    const messageContent = inputValue;
     setInputValue("");
+    
+    // Notify parent component about the new message
+    if (onUserMessage) {
+      onUserMessage(messageContent, currentUser);
+    }
+
+    // Only generate AI responses for Alex Martinez (the central user)
+    if (currentUser.name !== "Alex Martinez") {
+      return; // Exit early - no AI response for other users
+    }
+
     setIsTyping(true);
 
     try {
-      // Call OpenAI API for intelligent response
+      // Call OpenAI API for intelligent response (only for Alex Martinez)
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -344,9 +357,9 @@ export function ChatInterface({ className, onInsightGenerated, onUserChange, cur
 
       setMessages(prev => [...prev, assistantMessage]);
 
-      // Generate dashboard insight only for executive-level users
-      if (onInsightGenerated && isExecutiveUser(currentUser.designation)) {
-        console.log('🎯 Generating insight for executive user:', currentUser.designation);
+      // Generate dashboard insight for Alex Martinez
+      if (onInsightGenerated) {
+        console.log('🎯 Generating insight for central user:', currentUser.name);
         const insightTitle = generateInsightTitle(data.response);
         const insightSummary = data.response.length > 150
           ? data.response.slice(0, 150) + "..."
@@ -363,17 +376,15 @@ export function ChatInterface({ className, onInsightGenerated, onUserChange, cur
 
         console.log('📊 Generated insight:', insight);
         onInsightGenerated(insight);
-      } else {
-        console.log('❌ Not generating insight - User designation:', currentUser.designation, 'Is Executive:', isExecutiveUser(currentUser.designation));
       }
       
     } catch (error) {
       console.error('Failed to get AI response:', error);
       
-      // Fallback response
+      // Fallback response for Alex Martinez only
       const fallbackMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: "I'm currently analyzing the conversation context. Let me review the latest business metrics and provide an update shortly.",
+        content: "I'm currently analyzing your message and the business context. Let me review the latest metrics and provide strategic insights shortly.",
         sender: "Native IQ Assistant",
         role: "assistant", 
         timestamp: new Date()

@@ -7,6 +7,7 @@ import { ChatInterface } from "./ChatInterface";
 import { RoleDashboard } from "./RoleDashboard";
 import { GlassCard, Badge, Button } from "@nativeiq/ui";
 import MarketSuggestions from "./market/MarketSuggestions";
+import AssistantPane from "./AssistantPane";
 
 interface UserProfile {
   id: string;
@@ -68,6 +69,9 @@ export default function SplitScreenLayout({ insights, tasks, approvals, slaMetri
   const [expandedInsights, setExpandedInsights] = useState<Set<string>>(new Set());
   const [expandedExecutiveDashboard, setExpandedExecutiveDashboard] = useState(false);
   const [expandedMarketSuggestions, setExpandedMarketSuggestions] = useState(false);
+  const [expandedAssistant, setExpandedAssistant] = useState(false);
+  const [expandedDashboard, setExpandedDashboard] = useState(false);
+  const [lastUserMessage, setLastUserMessage] = useState<string>("");
 
   const handleInsightGenerated = (newInsight: any) => {
     const insight: Insight = {
@@ -87,6 +91,14 @@ export default function SplitScreenLayout({ insights, tasks, approvals, slaMetri
     };
     
     setLiveInsights(prev => [insight, ...prev.slice(0, 4)]); // Keep only 5 most recent
+  };
+
+  // Handler for when Alex Martinez (central user) sends a message
+  const handleUserMessage = (message: string, user: UserProfile) => {
+    // Only trigger assistant response for Alex Martinez (the central user)
+    if (user.name === "Alex Martinez") {
+      setLastUserMessage(message);
+    }
   };
 
   const commands = [
@@ -145,76 +157,129 @@ export default function SplitScreenLayout({ insights, tasks, approvals, slaMetri
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <main className="magical-content three-pane">
-        <div className="magical-content__left">
+      {/* Main Content Area - Chat Left, Assistant+Dashboard Right */}
+      <main className="magical-content new-three-pane">
+        {/* Chat Pane - Left Half */}
+        <div className="magical-content__chat">
           <ChatInterface
             className="magical-chat"
             onInsightGenerated={handleInsightGenerated}
             onUserChange={setCurrentUser}
+            onUserMessage={handleUserMessage}
             currentUser={currentUser}
           />
         </div>
 
-        <div className="magical-content__right three-pane__right">
-          <div className="three-pane__top">
-            <GlassCard title="AI Insights & Outputs" caption="Real-time business intelligence">
-              <div className="ai-outputs-section">
-                <div className="ai-outputs-grid">
-                  {liveInsights.slice(0, 4).map((insight) => (
-                    <div key={insight.id} className="ai-output-card">
-                      <div className="ai-output-header">
-                        <Badge tone={insight.impact === 'critical' ? 'critical' : insight.impact === 'high' ? 'warning' : 'muted'}>
-                          {insight.type}
-                        </Badge>
-                        <span className="ai-output-confidence">
-                          {Math.round(insight.confidence * 100)}%
-                        </span>
-                        {insight.userRole && (
-                          <div className="ai-output-user-role">
-                            <span className="user-role-indicator">👤</span>
-                            <span className="user-role-text">{insight.userRole}</span>
-                          </div>
-                        )}
-                      </div>
-                      <h4 className="ai-output-title">{insight.title}</h4>
-                      <p className="ai-output-summary">{insight.summary}</p>
-                      {insight.suggestedActions && insight.suggestedActions.length > 0 && (
-                        <div className="ai-output-actions">
-                          {insight.suggestedActions.slice(0, 2).map((action) => (
-                            <Button key={action.id} variant="secondary" className="ai-action-btn ai-action-btn--sm">
-                              {action.label}
-                            </Button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+        {/* Right Side Container */}
+        <div className="magical-content__right-side">
+          {/* Assistant Pane - Top Right */}
+          <div className={`magical-content__assistant ${expandedAssistant ? 'expanded' : ''}`}>
+            <AssistantPane
+              className="magical-assistant"
+              isExpanded={expandedAssistant}
+              onToggleExpand={() => setExpandedAssistant(!expandedAssistant)}
+              userMessage={lastUserMessage}
+              onInsightGenerated={handleInsightGenerated}
+            />
+          </div>
+
+          {/* Dashboard Pane - Bottom Right */}
+          <div className={`magical-content__dashboard ${expandedDashboard ? 'expanded' : ''}`}>
+            <GlassCard 
+              title="Key Business Insights" 
+              caption="Executive dashboard for Alex Martinez"
+              className="dashboard-pane-card"
+            >
+              <div className="dashboard-pane-header">
+                <div className="dashboard-pane-controls">
+                  <Badge tone="info" className="dashboard-pane-status">
+                    {liveInsights.length} insights
+                  </Badge>
+                  <button 
+                    onClick={() => setExpandedDashboard(!expandedDashboard)}
+                    className="dashboard-pane-expand-btn"
+                    title={expandedDashboard ? "Collapse" : "Expand"}
+                  >
+                    {expandedDashboard ? "⊟" : "⊞"}
+                  </button>
                 </div>
-                {liveInsights.length === 0 && (
-                  <div className="ai-outputs-empty">
-                    <p>💡 Start a conversation to see AI insights appear here</p>
+              </div>
+              
+              <div className="dashboard-pane-content">
+                {/* Key Metrics Overview */}
+                <div className="key-metrics-overview">
+                  <div className="key-metric-item critical">
+                    <div className="key-metric-icon">🔥</div>
+                    <div className="key-metric-details">
+                      <div className="key-metric-label">Cash Runway</div>
+                      <div className="key-metric-value">2.5 months</div>
+                    </div>
                   </div>
-                )}
+                  
+                  <div className="key-metric-item warning">
+                    <div className="key-metric-icon">📊</div>
+                    <div className="key-metric-details">
+                      <div className="key-metric-label">Churn Rate</div>
+                      <div className="key-metric-value">12%</div>
+                    </div>
+                  </div>
+                  
+                  <div className="key-metric-item info">
+                    <div className="key-metric-icon">💰</div>
+                    <div className="key-metric-details">
+                      <div className="key-metric-label">MRR</div>
+                      <div className="key-metric-value">$45K</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Recent Insights */}
+                <div className="dashboard-insights-section">
+                  <h4 className="dashboard-insights-title">Recent Strategic Insights</h4>
+                  <div className="dashboard-insights-list">
+                    {liveInsights.slice(0, 3).map((insight) => (
+                      <div key={insight.id} className="dashboard-insight-item">
+                        <div className="dashboard-insight-header">
+                          <Badge tone={insight.impact === 'critical' ? 'critical' : insight.impact === 'high' ? 'warning' : 'muted'}>
+                            {insight.impact}
+                          </Badge>
+                          <span className="dashboard-insight-confidence">
+                            {Math.round(insight.confidence * 100)}%
+                          </span>
+                        </div>
+                        <h5 className="dashboard-insight-title">{insight.title}</h5>
+                        <p className="dashboard-insight-summary">{insight.summary}</p>
+                      </div>
+                    ))}
+                    
+                    {liveInsights.length === 0 && (
+                      <div className="dashboard-insights-empty">
+                        <p>📈 Strategic insights will appear here as conversations develop</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Quick Actions */}
+                <div className="dashboard-actions-section">
+                  <h4 className="dashboard-actions-title">Quick Actions</h4>
+                  <div className="dashboard-actions-grid">
+                    <button className="dashboard-action-btn critical">
+                      <span className="dashboard-action-icon">🚨</span>
+                      <span className="dashboard-action-text">Review Cash Flow</span>
+                    </button>
+                    <button className="dashboard-action-btn warning">
+                      <span className="dashboard-action-icon">📞</span>
+                      <span className="dashboard-action-text">Customer Calls</span>
+                    </button>
+                    <button className="dashboard-action-btn info">
+                      <span className="dashboard-action-icon">📈</span>
+                      <span className="dashboard-action-text">Growth Strategy</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </GlassCard>
-          </div>
-          <div className="three-pane__bottom">
-            <div className="combined-dashboard-section">
-              <div className="combined-dashboard-left">
-                <RoleDashboard
-                  insights={liveInsights.slice(4)}
-                  slaMetrics={slaMetrics}
-                  currentUser={currentUser}
-                  className="magical-dashboard condensed"
-                />
-              </div>
-              <div className="combined-dashboard-right">
-                <GlassCard title="Market Suggestions" caption="Industry-aware nudges">
-                  <MarketSuggestions />
-                </GlassCard>
-              </div>
-            </div>
           </div>
         </div>
       </main>
