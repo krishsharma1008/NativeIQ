@@ -118,29 +118,49 @@ export function ChatInterface({ className, onInsightGenerated, onUserChange, cur
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Welcome to your team chat! I'm your Native IQ Assistant, here to help analyze conversations and provide insights to grow your business. Let's discuss what's on your mind!",
+      content: "Good morning team! I've completed a comprehensive analysis of our current business metrics and identified several critical areas that require immediate attention. Let me provide you with a strategic overview and actionable recommendations.",
       sender: "Native IQ Assistant",
       role: "assistant",
-      timestamp: new Date(Date.now() - 1000 * 60 * 10)
+      timestamp: new Date(Date.now() - 1000 * 60 * 20)
     },
     {
-      id: "2", 
-      content: "Morning everyone! Our biggest client TechStart is asking for a discount on their renewal. They're threatening to leave if we don't match a competitor's price. What should we do?",
+      id: "2",
+      content: "Our churn rate jumped to 12% this month. What're we doing about customer retention?",
       sender: "Alex Martinez",
       role: "user",
       designation: "Founder & CEO",
       department: "Leadership",
-      timestamp: new Date(Date.now() - 1000 * 60 * 8),
+      timestamp: new Date(Date.now() - 1000 * 60 * 15),
       avatar: "👨‍💼"
     },
     {
       id: "3",
-      content: "That's 30% of our monthly revenue! Can we offer them added value instead? Maybe extended support or additional features?",
-      sender: "Jamie Wilson", 
+      content: "Maybe we should survey the customers who left to understand why. Also noticed our trial-to-paid conversion dropped from 25% to 18%.",
+      sender: "Taylor Brooks",
+      role: "user",
+      designation: "Customer Success",
+      department: "Support",
+      timestamp: new Date(Date.now() - 1000 * 60 * 12),
+      avatar: "👩‍💻"
+    },
+    {
+      id: "4",
+      content: "Just got off a call with a potential enterprise client - they're interested but want custom pricing. They represent $50K+ ARR if we land them. What's our enterprise pricing strategy?",
+      sender: "Jordan Lee",
+      role: "user",
+      designation: "Sales Manager",
+      department: "Sales",
+      timestamp: new Date(Date.now() - 1000 * 60 * 10),
+      avatar: "👨‍🚀"
+    },
+    {
+      id: "5",
+      content: "Our cash flow is getting tight - we have 2.5 months runway left. Can we delay some vendor payments or cut back on marketing spend?",
+      sender: "Jamie Wilson",
       role: "user",
       designation: "Operations Lead",
       department: "Operations",
-      timestamp: new Date(Date.now() - 1000 * 60 * 7),
+      timestamp: new Date(Date.now() - 1000 * 60 * 8),
       avatar: "👩‍💼"
     }
   ]);
@@ -165,17 +185,32 @@ export function ChatInterface({ className, onInsightGenerated, onUserChange, cur
     scrollToBottom();
   }, [messages]);
 
+  // Send initial AI response after component mounts
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (messages.length > 0 && messages[messages.length - 1].role === "user") {
+        handleAIResponse(messages);
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []); // Only run once on mount
+
   const generateContextData = () => {
     return {
       monthlyRevenue: "$45K MRR",
-      customerChurn: "8% monthly churn", 
+      customerChurn: "12% monthly churn (up from 8%)",
       supportTickets: "23 open tickets",
-      cashFlow: "3.2 months runway",
+      cashFlow: "2.5 months runway",
       monthlyBurn: "$12.8K monthly costs",
-      topRisks: ["TechStart renewal at risk ($13.5K)", "High support volume", "Over budget by $0.8K"],
+      trialConversion: "18% trial-to-paid (down from 25%)",
+      growthRate: "8% MoM (down from 15%)",
+      topRisks: ["Customer churn spike", "Cash flow runway dropping", "Trial conversion declining", "Team capacity issues"],
       recentInsights: [
-        { title: "Customer retention strategies needed" },
-        { title: "Support efficiency improvements required" }
+        { title: "Churn analysis shows onboarding complexity as main issue" },
+        { title: "Enterprise opportunity worth $50K+ ARR identified" },
+        { title: "Team velocity dropped 30% due to workload" },
+        { title: "Competitive pricing pressure increasing" }
       ]
     };
   };
@@ -311,26 +346,108 @@ export function ChatInterface({ className, onInsightGenerated, onUserChange, cur
     }
   };
 
-  // Simulate periodic team activity
+  // Simulate realistic team conversations with context
   useEffect(() => {
     const interval = setInterval(() => {
-      if (Math.random() > 0.7) {
+      if (Math.random() > 0.4) { // More frequent conversations
         const randomUser = USER_PROFILES[Math.floor(Math.random() * USER_PROFILES.length)];
-        const businessMessages = [
-          "Just lost another trial customer - they said our onboarding was too confusing. We need to simplify this ASAP.",
-          "Great news! LocalBiz just upgraded to our premium plan. That's +$400 MRR!",
-          "Our support queue is getting backed up again - 23 open tickets. Maybe we should hire a part-time support person?", 
-          "The new pricing page is working - conversion rate is up 12% this week!",
-          "Should we offer a payment plan for smaller businesses? Getting lots of requests.",
-          "TechStart is still pushing for that 40% discount. That's $13.5K at risk - 30% of our MRR.",
-          "We're $800 over budget this month. Need to review our software subscriptions.",
-          "The competitor analysis shows we're priced 35% higher. Is our value prop strong enough?"
+
+        // Context-aware business scenarios
+        const businessScenarios = [
+          {
+            messages: [
+              "Our churn rate jumped to 12% this month. What're we doing about customer retention?",
+              "Maybe we should survey the customers who left to understand why.",
+              "Also noticed our trial-to-paid conversion dropped from 25% to 18%."
+            ],
+            trigger: "churn"
+          },
+          {
+            messages: [
+              "The new feature rollout went well - user engagement is up 40%!",
+              "But we're seeing some performance issues with the new dashboard.",
+              "Should we roll back or can dev team optimize it quickly?"
+            ],
+            trigger: "feature"
+          },
+          {
+            messages: [
+              "Just got off a call with a potential enterprise client - they're interested but want custom pricing.",
+              "They represent $50K+ ARR if we land them. What's our enterprise pricing strategy?",
+              "We should create a pricing tier for companies with 100+ employees."
+            ],
+            trigger: "enterprise"
+          },
+          {
+            messages: [
+              "Our cash flow is getting tight - we have 2.5 months runway left.",
+              "Can we delay some vendor payments or cut back on marketing spend?",
+              "Maybe we should look into invoice financing options."
+            ],
+            trigger: "cashflow"
+          },
+          {
+            messages: [
+              "Competitor just launched a similar product at half our price point.",
+              "They're targeting the same SMB market segment.",
+              "We need to differentiate our value proposition - what makes us unique?"
+            ],
+            trigger: "competition"
+          },
+          {
+            messages: [
+              "The team is feeling overwhelmed with the current workload.",
+              "Maybe we should hire a junior developer or outsource some tasks.",
+              "Our velocity has dropped 30% in the last sprint due to burnout."
+            ],
+            trigger: "team"
+          },
+          {
+            messages: [
+              "Just finished the customer interviews - main pain points are setup complexity.",
+              "Users want a simpler onboarding flow and better documentation.",
+              "We should prioritize UX improvements in the next sprint."
+            ],
+            trigger: "ux"
+          },
+          {
+            messages: [
+              "Our MRR growth slowed to 8% this month from 15% last month.",
+              "The market might be getting saturated - should we expand to new segments?",
+              "Maybe we need to improve our referral program or partner channels."
+            ],
+            trigger: "growth"
+          }
         ];
-        
-        const randomMessage = businessMessages[Math.floor(Math.random() * businessMessages.length)];
-        simulateUserMessage(randomUser, randomMessage);
+
+        const scenario = businessScenarios[Math.floor(Math.random() * businessScenarios.length)];
+
+        // Start a conversation thread
+        const startConversation = () => {
+          const messages = scenario.messages;
+          let messageIndex = 0;
+
+          const sendNextMessage = () => {
+            if (messageIndex < messages.length) {
+              // Use different users for different messages in the thread
+              const messageUser = messageIndex === 0 ?
+                randomUser :
+                USER_PROFILES[Math.floor(Math.random() * USER_PROFILES.length)];
+
+              simulateUserMessage(messageUser, messages[messageIndex]);
+
+              messageIndex++;
+              // Schedule next message in thread with shorter delay
+              setTimeout(sendNextMessage, 3000 + Math.random() * 4000);
+            }
+          };
+
+          sendNextMessage();
+        };
+
+        startConversation();
       }
-    }, 30000 + Math.random() * 60000); // Random interval between 30-90 seconds
+    }, 20000 + Math.random() * 40000); // More frequent: 20-60 seconds
 
     return () => clearInterval(interval);
   }, [messages]);
@@ -351,9 +468,9 @@ export function ChatInterface({ className, onInsightGenerated, onUserChange, cur
     return user?.color || '#6B7280';
   };
 
-  // Make assistant messages concise and human-like. Keeps lists short and trims verbosity.
+  // Format assistant responses for better readability while preserving insights
   const formatAssistantResponse = (text: string): string => {
-    if (!text) return "Here's a quick plan: 1) Next step 2) Optional stretch.";
+    if (!text) return "I recommend focusing on these key priorities:\n\n1. Assess the current situation\n2. Develop an action plan\n3. Implement and measure results";
 
     // Normalize whitespace and remove system-style prefixes
     let cleaned = text
@@ -361,26 +478,22 @@ export function ChatInterface({ className, onInsightGenerated, onUserChange, cur
       .replace(/^\[.*?\]:\s*/g, '')
       .trim();
 
-    // Remove greetings like "Hi Alex," / "Hey team" at the start
+    // Remove common greetings but preserve business context
     cleaned = cleaned.replace(/^(hi|hey|hello)[,!\s]+[a-zA-Z]+[,!\s]*?/i, '');
 
-    // Keep the first complete sentence as a lead
-    const leadMatch = cleaned.match(/^[^.!?]+[.!?]/);
-    const lead = (leadMatch ? leadMatch[0] : cleaned).trim();
+    // Allow longer responses for more comprehensive business insights
+    // Only truncate if extremely long (over 800 characters)
+    if (cleaned.length > 800) {
+      // Try to truncate at a natural break point
+      const truncated = cleaned.slice(0, 800);
+      const lastSentence = truncated.lastIndexOf('.');
+      if (lastSentence > 600) {
+        return truncated.slice(0, lastSentence + 1).trim();
+      }
+      return truncated + '...';
+    }
 
-    // Extract up to 3 enumerated items or hyphen bullets
-    const bulletMatches = Array.from(
-      cleaned.matchAll(/(?:^|\s)(?:\d+\.|[-•])\s([^\n]+?)(?=(?:\s\d+\.|\s[-•]|$))/g)
-    )
-      .map(m => m[1].trim())
-      .filter(Boolean)
-      .slice(0, 3);
-
-    const message = [lead, ...bulletMatches.map((b, i) => `${i + 1}. ${b.replace(/\s*[:;,.]$/,'')}`)]
-      .join(' ')
-      .trim();
-
-    return message.length > 320 ? message.slice(0, 317) + '…' : message;
+    return cleaned;
   };
 
   return (

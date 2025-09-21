@@ -71,12 +71,46 @@ function buildSuggestions(industry: string, location: string, news: any[]) {
         source: 'Serper news'
       });
     }
+
+    // Add more suggestions for better scrolling demo
     suggestions.push({
       id: 'ops-1',
       title: 'Plan inventory around weekends',
       rationale: 'Local demand spikes on Fri–Sun for food SMBs; align prep to reduce waste.',
       action: 'Increase prep by 20% on Fri; reduce by 15% on Mon–Tue',
       confidence: 0.6
+    });
+
+    suggestions.push({
+      id: 'pricing-1',
+      title: 'Dynamic pricing for peak hours',
+      rationale: 'Weekends and evenings see 35% higher demand. Adjust pricing to match.',
+      action: 'Implement 10-15% price increase during peak hours Fri-Sun',
+      confidence: 0.72
+    });
+
+    suggestions.push({
+      id: 'menu-1',
+      title: 'Limited-time specialty items',
+      rationale: 'Scarcity drives urgency and can increase average order value by 20-25%.',
+      action: 'Introduce 3 rotating "chef special" items that change weekly',
+      confidence: 0.68
+    });
+
+    suggestions.push({
+      id: 'social-1',
+      title: 'Instagram food photography focus',
+      rationale: 'Food businesses with strong social presence see 40% higher engagement.',
+      action: 'Post daily food photos and behind-the-scenes content to drive traffic',
+      confidence: 0.65
+    });
+
+    suggestions.push({
+      id: 'delivery-1',
+      title: 'Optimize delivery packaging',
+      rationale: 'Poor packaging leads to 15% more complaints and negative reviews.',
+      action: 'Invest in branded, temperature-controlled containers for takeout',
+      confidence: 0.58
     });
   } else {
     // Generic SMB suggestion
@@ -87,6 +121,22 @@ function buildSuggestions(industry: string, location: string, news: any[]) {
       action: 'Create a 7‑day promo referencing a trending topic in your niche',
       confidence: 0.55,
       source: news[0]?.title
+    });
+
+    suggestions.push({
+      id: 'generic-2',
+      title: 'Customer feedback collection system',
+      rationale: 'Regular feedback helps identify issues before they impact retention.',
+      action: 'Send post-purchase surveys and track sentiment trends',
+      confidence: 0.62
+    });
+
+    suggestions.push({
+      id: 'generic-3',
+      title: 'Social media engagement strategy',
+      rationale: 'Active social presence can drive 20-30% of new customer acquisition.',
+      action: 'Post 3-5 times per week with user-generated content focus',
+      confidence: 0.58
     });
   }
 
