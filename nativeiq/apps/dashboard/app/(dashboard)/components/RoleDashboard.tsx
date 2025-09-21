@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { Insight, SlaMetric } from "@nativeiq/types";
 import { CEODashboard } from "./dashboards/CEODashboard";
 import { SalesDashboard } from "./dashboards/SalesDashboard";
 import { OperationsDashboard } from "./dashboards/OperationsDashboard";
 import { CustomerSuccessDashboard } from "./dashboards/CustomerSuccessDashboard";
+import { GlassCard, MetricTile, Badge } from "@nativeiq/ui";
 
 interface UserProfile {
   id: string;
@@ -24,6 +25,8 @@ type RoleDashboardProps = {
 };
 
 export function RoleDashboard({ insights, slaMetrics, currentUser, className }: RoleDashboardProps) {
+  const [expanded, setExpanded] = useState(false);
+
   const DashboardComponent = useMemo(() => {
     switch (currentUser.designation) {
       case "Founder & CEO":
@@ -66,14 +69,46 @@ export function RoleDashboard({ insights, slaMetrics, currentUser, className }: 
               <span className="role-dashboard__user-role">{currentUser.designation}</span>
             </div>
           </div>
+          <button
+            type="button"
+            className="button button--secondary"
+            onClick={() => setExpanded((v) => !v)}
+            aria-expanded={expanded}
+            aria-controls="role-dashboard-details"
+          >
+            {expanded ? "Collapse" : "Expand"}
+          </button>
         </div>
       </div>
       
-      <DashboardComponent 
-        insights={insights}
-        slaMetrics={slaMetrics}
-        className="role-dashboard__content"
-      />
+      {/* Compact summary with the most important information */}
+      <GlassCard className="condensed-dashboard__card role-dashboard__summary">
+        <div className="ceo-metrics-grid">
+          <MetricTile label="MRR Growth" value="+12%" delta="This month" intent="positive" />
+          <MetricTile label="Cash Runway" value="3.2mo" delta="Critical" intent="warning" />
+          <MetricTile label="Churn" value="8%" delta="Target <5%" intent="warning" />
+        </div>
+        {/* Top priority insight */}
+        {insights && insights.length > 0 && (
+          <div className="strategic-insights-list" style={{ marginTop: "0.75rem" }}>
+            <div className="strategic-insight-item">
+              <div className="strategic-insight-item__header">
+                <h4 className="strategic-insight-item__title">{insights[0].title}</h4>
+                <Badge>{insights[0].impact} priority</Badge>
+              </div>
+              <p className="strategic-insight-item__summary">{insights[0].summary}</p>
+            </div>
+          </div>
+        )}
+      </GlassCard>
+
+      <div id="role-dashboard-details" style={{ display: expanded ? "block" : "none" }}>
+        <DashboardComponent 
+          insights={insights}
+          slaMetrics={slaMetrics}
+          className="role-dashboard__content"
+        />
+      </div>
     </div>
   );
 }

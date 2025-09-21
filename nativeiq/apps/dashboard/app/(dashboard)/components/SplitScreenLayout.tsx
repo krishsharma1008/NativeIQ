@@ -5,7 +5,7 @@ import type { Approval, Insight, Task, SlaMetric } from "@nativeiq/types";
 import { CommandPalette } from "@nativeiq/ui";
 import { ChatInterface } from "./ChatInterface";
 import { RoleDashboard } from "./RoleDashboard";
-import { GlassCard } from "@nativeiq/ui";
+import { GlassCard, Badge, Button } from "@nativeiq/ui";
 import MarketSuggestions from "./market/MarketSuggestions";
 
 interface UserProfile {
@@ -65,6 +65,9 @@ export default function SplitScreenLayout({ insights, tasks, approvals, slaMetri
   const [query, setQuery] = useState("");
   const [liveInsights, setLiveInsights] = useState(insights);
   const [currentUser, setCurrentUser] = useState<UserProfile>(USER_PROFILES[0]);
+  const [expandedInsights, setExpandedInsights] = useState<Set<string>>(new Set());
+  const [expandedExecutiveDashboard, setExpandedExecutiveDashboard] = useState(false);
+  const [expandedMarketSuggestions, setExpandedMarketSuggestions] = useState(false);
 
   const handleInsightGenerated = (newInsight: any) => {
     const insight: Insight = {
@@ -155,17 +158,63 @@ export default function SplitScreenLayout({ insights, tasks, approvals, slaMetri
 
         <div className="magical-content__right three-pane__right">
           <div className="three-pane__top">
-            <RoleDashboard
-              insights={liveInsights}
-              slaMetrics={slaMetrics}
-              currentUser={currentUser}
-              className="magical-dashboard"
-            />
+            <GlassCard title="AI Insights & Outputs" caption="Real-time business intelligence">
+              <div className="ai-outputs-section">
+                <div className="ai-outputs-grid">
+                  {liveInsights.slice(0, 4).map((insight) => (
+                    <div key={insight.id} className="ai-output-card">
+                      <div className="ai-output-header">
+                        <Badge tone={insight.impact === 'critical' ? 'critical' : insight.impact === 'high' ? 'warning' : 'muted'}>
+                          {insight.type}
+                        </Badge>
+                        <span className="ai-output-confidence">
+                          {Math.round(insight.confidence * 100)}%
+                        </span>
+                        {insight.userRole && (
+                          <div className="ai-output-user-role">
+                            <span className="user-role-indicator">👤</span>
+                            <span className="user-role-text">{insight.userRole}</span>
+                          </div>
+                        )}
+                      </div>
+                      <h4 className="ai-output-title">{insight.title}</h4>
+                      <p className="ai-output-summary">{insight.summary}</p>
+                      {insight.suggestedActions && insight.suggestedActions.length > 0 && (
+                        <div className="ai-output-actions">
+                          {insight.suggestedActions.slice(0, 2).map((action) => (
+                            <Button key={action.id} variant="secondary" className="ai-action-btn ai-action-btn--sm">
+                              {action.label}
+                            </Button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                {liveInsights.length === 0 && (
+                  <div className="ai-outputs-empty">
+                    <p>💡 Start a conversation to see AI insights appear here</p>
+                  </div>
+                )}
+              </div>
+            </GlassCard>
           </div>
           <div className="three-pane__bottom">
-            <GlassCard title="Market Suggestions" caption="Industry-aware nudges">
-              <MarketSuggestions />
-            </GlassCard>
+            <div className="combined-dashboard-section">
+              <div className="combined-dashboard-left">
+                <RoleDashboard
+                  insights={liveInsights.slice(4)}
+                  slaMetrics={slaMetrics}
+                  currentUser={currentUser}
+                  className="magical-dashboard condensed"
+                />
+              </div>
+              <div className="combined-dashboard-right">
+                <GlassCard title="Market Suggestions" caption="Industry-aware nudges">
+                  <MarketSuggestions />
+                </GlassCard>
+              </div>
+            </div>
           </div>
         </div>
       </main>

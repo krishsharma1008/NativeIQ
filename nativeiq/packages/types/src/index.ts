@@ -21,6 +21,7 @@ export type Insight = {
     label: string;
     intent?: "primary" | "secondary" | "ghost";
   }>;
+  userRole?: string; // Role of the user who triggered this insight
 };
 
 export type TaskState = "open" | "in_progress" | "done" | "blocked";

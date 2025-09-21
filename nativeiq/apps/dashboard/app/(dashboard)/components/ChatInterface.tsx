@@ -115,6 +115,73 @@ const USER_PROFILES: UserProfile[] = [
 ];
 
 export function ChatInterface({ className, onInsightGenerated, onUserChange, currentUser: propCurrentUser }: ChatInterfaceProps) {
+  // Helper function to check if user is executive-level
+  const isExecutiveUser = (designation: string): boolean => {
+    const executiveDesignations = [
+      "Founder & CEO",
+      "CEO",
+      "Founder",
+      "Executive",
+      "VP",
+      "Vice President",
+      "CTO",
+      "Chief Technology Officer",
+      "COO",
+      "Chief Operating Officer",
+      "CFO",
+      "Chief Financial Officer"
+    ];
+    return executiveDesignations.some(execRole =>
+      designation.toLowerCase().includes(execRole.toLowerCase())
+    );
+  };
+
+  // Helper function to generate insight titles from AI responses
+  const generateInsightTitle = (response: string): string => {
+    const titlePatterns = [
+      "Strategic Recommendation",
+      "Business Analysis",
+      "Action Plan",
+      "Key Insight",
+      "Growth Opportunity",
+      "Risk Assessment",
+      "Performance Review",
+      "Market Analysis"
+    ];
+
+    // Try to extract a meaningful title from the response
+    const sentences = response.split(/[.!?]+/).filter(s => s.trim().length > 10);
+    if (sentences.length > 0) {
+      const firstSentence = sentences[0].trim();
+      if (firstSentence.length < 60) {
+        return firstSentence;
+      }
+    }
+
+    return titlePatterns[Math.floor(Math.random() * titlePatterns.length)];
+  };
+
+  // Helper function to determine impact level from response
+  const determineImpact = (response: string): "low" | "medium" | "high" | "critical" => {
+    const criticalKeywords = ["urgent", "critical", "immediate", "crisis", "emergency", "severe", "dangerous"];
+    const highKeywords = ["important", "significant", "major", "substantial", "priority", "attention needed"];
+    const mediumKeywords = ["consider", "review", "monitor", "attention", "moderate"];
+
+    const lowerResponse = response.toLowerCase();
+
+    if (criticalKeywords.some(keyword => lowerResponse.includes(keyword))) {
+      return "critical";
+    }
+    if (highKeywords.some(keyword => lowerResponse.includes(keyword))) {
+      return "high";
+    }
+    if (mediumKeywords.some(keyword => lowerResponse.includes(keyword))) {
+      return "medium";
+    }
+
+    return Math.random() > 0.5 ? "medium" : "low";
+  };
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -167,6 +234,7 @@ export function ChatInterface({ className, onInsightGenerated, onUserChange, cur
   
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [currentUser, setCurrentUser] = useState<UserProfile>(propCurrentUser || USER_PROFILES[0]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -176,6 +244,21 @@ export function ChatInterface({ className, onInsightGenerated, onUserChange, cur
       setCurrentUser(propCurrentUser);
     }
   }, [propCurrentUser]);
+
+  // Handle scroll detection for fade effect
+  useEffect(() => {
+    const handleScroll = (e: Event) => {
+      const target = e.target as HTMLElement;
+      const scrollTop = target.scrollTop;
+      setIsScrolled(scrollTop > 10);
+    };
+
+    const messagesContainer = document.querySelector('.chat-interface__messages');
+    if (messagesContainer) {
+      messagesContainer.addEventListener('scroll', handleScroll);
+      return () => messagesContainer.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -260,15 +343,28 @@ export function ChatInterface({ className, onInsightGenerated, onUserChange, cur
       };
 
       setMessages(prev => [...prev, assistantMessage]);
-      
-      // Generate dashboard insight if callback provided
-      if (onInsightGenerated && Math.random() > 0.6) {
-        onInsightGenerated({
-          title: "New insight from conversation",
-          summary: data.response.slice(0, 100) + "...",
-          confidence: 0.85,
-          source: "Team Chat Analysis"
-        });
+
+      // Generate dashboard insight only for executive-level users
+      if (onInsightGenerated && isExecutiveUser(currentUser.designation)) {
+        console.log('🎯 Generating insight for executive user:', currentUser.designation);
+        const insightTitle = generateInsightTitle(data.response);
+        const insightSummary = data.response.length > 150
+          ? data.response.slice(0, 150) + "..."
+          : data.response;
+
+        const insight = {
+          title: insightTitle,
+          summary: insightSummary,
+          confidence: 0.85 + Math.random() * 0.1, // 0.85-0.95 confidence
+          source: "AI Assistant Analysis",
+          impact: determineImpact(data.response),
+          userRole: currentUser.designation
+        };
+
+        console.log('📊 Generated insight:', insight);
+        onInsightGenerated(insight);
+      } else {
+        console.log('❌ Not generating insight - User designation:', currentUser.designation, 'Is Executive:', isExecutiveUser(currentUser.designation));
       }
       
     } catch (error) {
@@ -338,6 +434,26 @@ export function ChatInterface({ className, onInsightGenerated, onUserChange, cur
       };
 
       setMessages(prev => [...prev, assistantMessage]);
+
+      // Generate dashboard insight for simulated AI responses if from executive user
+      if (onInsightGenerated && currentMessages.length > 0) {
+        const lastUserMessage = currentMessages[currentMessages.length - 1];
+        if (lastUserMessage.designation && isExecutiveUser(lastUserMessage.designation)) {
+          const insightTitle = generateInsightTitle(data.response);
+          const insightSummary = data.response.length > 150
+            ? data.response.slice(0, 150) + "..."
+            : data.response;
+
+          onInsightGenerated({
+            title: insightTitle,
+            summary: insightSummary,
+            confidence: 0.85 + Math.random() * 0.1,
+            source: "AI Assistant Analysis",
+            impact: determineImpact(data.response),
+            userRole: lastUserMessage.designation
+          });
+        }
+      }
       
     } catch (error) {
       console.error('Failed to get AI response:', error);
@@ -499,33 +615,11 @@ export function ChatInterface({ className, onInsightGenerated, onUserChange, cur
   return (
     <div className={`chat-interface ${className || ""}`}>
       <GlassCard
-        title="Team Chat - Native IQ"
-        caption="Smart business insights for growing companies"
         className="chat-interface__container"
       >
-        {/* User Selector */}
-        <div className="chat-interface__user-selector">
-          <span className="chat-interface__user-label">Chatting as:</span>
-          <select 
-            value={currentUser.id}
-            onChange={(e) => {
-              const user = USER_PROFILES.find(u => u.id === e.target.value);
-              if (user) {
-                setCurrentUser(user);
-                onUserChange?.(user);
-              }
-            }}
-            className="chat-interface__user-select"
-          >
-            {USER_PROFILES.map(user => (
-              <option key={user.id} value={user.id}>
-                {user.avatar} {user.name} ({user.designation})
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* User Selector removed as requested */}
 
-        <div className="chat-interface__messages">
+        <div className={`chat-interface__messages ${isScrolled ? 'scrolled' : ''}`}>
           {messages.map((message) => (
             <div
               key={message.id}
