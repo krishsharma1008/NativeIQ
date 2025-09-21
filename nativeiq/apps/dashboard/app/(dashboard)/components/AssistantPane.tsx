@@ -22,26 +22,26 @@ interface AssistantPaneProps {
   onInsightGenerated?: (insight: any) => void;
 }
 
-// Mock initial insights for demonstration
+// Mock initial insights for demonstration - concise and actionable
 const INITIAL_INSIGHTS: AssistantInsight[] = [
   {
     id: "insight-1",
-    title: "Customer Churn Analysis",
-    content: "Based on the recent conversation about churn rate jumping to 12%, I recommend implementing an automated customer health scoring system. The pattern suggests onboarding friction is the primary cause, affecting trial-to-paid conversion rates.",
+    title: "Churn Reduction Strategy",
+    content: "Churn at 12% - onboarding friction detected. Implement health scoring system. Target 3% reduction in 30 days.",
     timestamp: new Date(Date.now() - 1000 * 60 * 5),
     confidence: 0.89,
     impact: "high",
-    tags: ["churn", "onboarding", "retention"],
+    tags: ["churn", "retention"],
     relatedTopic: "customer retention"
   },
   {
-    id: "insight-2", 
+    id: "insight-2",
     title: "Cash Flow Optimization",
-    content: "With 2.5 months runway remaining, immediate actions are needed. Consider: 1) Delaying non-critical vendor payments by 30 days, 2) Implementing invoice financing for faster AR collection, 3) Reducing marketing spend by 40% temporarily while focusing on organic growth channels.",
+    content: "2.5 months runway - delay vendor payments 30 days. Invoice financing for faster AR. Reduce marketing spend 40%.",
     timestamp: new Date(Date.now() - 1000 * 60 * 10),
     confidence: 0.92,
     impact: "critical",
-    tags: ["cash flow", "runway", "financial planning"],
+    tags: ["cash flow", "runway"],
     relatedTopic: "financial management"
   }
 ];
@@ -127,7 +127,7 @@ export function AssistantPane({
       if (onInsightGenerated) {
         onInsightGenerated({
           title: newInsight.title,
-          summary: newInsight.content.slice(0, 200) + "...",
+          summary: newInsight.content.length > 100 ? newInsight.content.slice(0, 100) + "..." : newInsight.content,
           confidence: newInsight.confidence,
           impact: newInsight.impact,
           source: "AI Assistant Analysis"
@@ -157,23 +157,23 @@ export function AssistantPane({
 
   const generateFallbackInsight = (message: string): string => {
     const businessTopics = {
-      'revenue': 'Focus on revenue optimization through customer lifetime value improvement and pricing strategy refinement.',
-      'churn': 'Implement proactive customer success measures including health scoring and automated outreach for at-risk accounts.',
-      'growth': 'Prioritize sustainable growth channels with the highest ROI while maintaining healthy unit economics.',
-      'team': 'Consider team efficiency improvements and workload distribution to prevent burnout and maintain productivity.',
-      'funding': 'Explore funding options including revenue-based financing, grants, or strategic partnerships to extend runway.',
-      'competition': 'Differentiate through unique value propositions and focus on customer success to reduce competitive pressure.',
-      'cash': 'Implement cash flow management strategies including payment terms optimization and expense prioritization.',
-      'customer': 'Enhance customer experience through feedback loops and personalized engagement strategies.'
+      'revenue': 'Revenue optimization: Focus on LTV and pricing strategy. Target +15% MRR growth.',
+      'churn': 'Customer retention: Health scoring + automated outreach. Reduce churn by 3%.',
+      'growth': 'Growth strategy: Prioritize high-ROI channels. Maintain unit economics.',
+      'team': 'Team efficiency: Optimize workload distribution. Prevent burnout.',
+      'funding': 'Funding options: Revenue-based financing or strategic partnerships.',
+      'competition': 'Competitive edge: Unique value props + customer success focus.',
+      'cash': 'Cash flow: Payment terms optimization + expense prioritization.',
+      'customer': 'CX improvement: Feedback loops + personalized engagement.'
     };
 
     for (const [topic, insight] of Object.entries(businessTopics)) {
       if (message.toLowerCase().includes(topic)) {
-        return `Based on your message about ${topic}, I recommend: ${insight} This approach should help address the immediate concerns while building long-term strategic value.`;
+        return `${insight} Action within 2 weeks for immediate impact.`;
       }
     }
 
-    return `I've analyzed your message and recommend focusing on the key strategic priorities. Consider implementing data-driven decision making processes and establishing clear metrics to track progress on this initiative.`;
+    return `Key insight: Focus on high-impact strategic priorities. Implement data-driven decisions with clear metrics. Start with 1-2 actionable items this week.`;
   };
 
   const generateInsightTitle = (content: string): string => {

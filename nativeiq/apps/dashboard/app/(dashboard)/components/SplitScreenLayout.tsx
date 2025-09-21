@@ -195,7 +195,14 @@ export default function SplitScreenLayout({ insights, tasks, approvals, slaMetri
                   <Badge tone="info" className="dashboard-pane-status">
                     {liveInsights.length} insights
                   </Badge>
-                  <button 
+                  <button
+                    onClick={() => setExpandedMarketSuggestions(!expandedMarketSuggestions)}
+                    className="dashboard-pane-market-btn"
+                    title="Open Market Insights"
+                  >
+                    📊 Market
+                  </button>
+                  <button
                     onClick={() => setExpandedDashboard(!expandedDashboard)}
                     className="dashboard-pane-expand-btn"
                     title={expandedDashboard ? "Collapse" : "Expand"}
@@ -282,6 +289,19 @@ export default function SplitScreenLayout({ insights, tasks, approvals, slaMetri
             </GlassCard>
           </div>
         </div>
+
+        {/* Market Suggestions Panel */}
+        {expandedMarketSuggestions && (
+          <div className="market-suggestions-panel">
+            <GlassCard
+              title="Market Insights"
+              caption="Industry trends and market intelligence"
+              className="market-suggestions-card"
+            >
+              <MarketSuggestions onClose={() => setExpandedMarketSuggestions(false)} />
+            </GlassCard>
+          </div>
+        )}
       </main>
 
       <CommandPalette
