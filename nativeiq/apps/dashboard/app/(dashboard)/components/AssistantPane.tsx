@@ -267,19 +267,17 @@ export function AssistantPane({
 
   return (
     <div className={`assistant-pane ${isExpanded ? 'assistant-pane--expanded' : ''} ${className || ""}`}>
-      <GlassCard className="assistant-pane__container">
-        {/* Header */}
-        <div className="assistant-pane__header">
-          <div className="assistant-pane__title-section">
-            <h3 className="assistant-pane__title">🤖 AI Assistant</h3>
-            <p className="assistant-pane__subtitle">Real-time business insights for Alex Martinez</p>
-          </div>
+      <GlassCard
+        className="assistant-pane__container"
+        title="🤖 AI Assistant"
+        caption="Real-time business insights for Alex Martinez"
+        actionSlot={
           <div className="assistant-pane__actions">
             <Badge tone="info" className="assistant-pane__status">
               {insights.length} insights
             </Badge>
             {onToggleExpand && (
-              <button 
+              <button
                 onClick={onToggleExpand}
                 className="assistant-pane__expand-btn"
                 title={isExpanded ? "Collapse" : "Expand"}
@@ -288,7 +286,8 @@ export function AssistantPane({
               </button>
             )}
           </div>
-        </div>
+        }
+      >
 
         {/* Insights List */}
         <div className="assistant-pane__content">

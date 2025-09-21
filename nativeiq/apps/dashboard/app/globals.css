@@ -1850,11 +1850,6 @@ main {
   color: var(--color-status-error);
 }
 
-.sales-insights-list,
-.sales-insight-item,
-.sales-action {
-  /* Reuse strategic insight styles */
-}
 
 .sales-insights-list {
   display: flex;
@@ -2089,11 +2084,6 @@ main {
   transition: width 0.3s ease;
 }
 
-.operations-insights-list,
-.operations-insight-item,
-.operations-action {
-  /* Reuse strategic insight styles */
-}
 
 .operations-insights-list {
   display: flex;
@@ -2300,11 +2290,6 @@ main {
   margin-top: 0.5rem;
 }
 
-.customer-insights-list,
-.customer-insight-item,
-.customer-action {
-  /* Reuse strategic insight styles */
-}
 
 .customer-insights-list {
   display: flex;
@@ -3123,9 +3108,6 @@ main {
   position: relative;
 }
 
-.assistant-pane--expanded {
-  /* Additional styling for expanded state */
-}
 
 .assistant-pane__container {
   height: 100%;
@@ -3158,56 +3140,54 @@ main {
   pointer-events: none;
 }
 
-.assistant-pane__header {
-  display: flex !important;
+/* Standard GlassCard header styles for AssistantPane */
+.glass-card .glass-card__header {
+  display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 1.5rem;
+  padding: 1rem 1.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 1rem;
   flex-shrink: 0;
-  background: rgba(0, 8, 19, 0.8);
-  backdrop-filter: blur(10px);
-  border-radius: 20px 20px 0 0;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  visibility: visible !important;
 }
 
-.assistant-pane__title-section {
-  display: flex !important;
-  flex-direction: column;
-  gap: 0.25rem;
-  visibility: visible !important;
+.glass-card .glass-card__title {
+  flex: 1;
+  min-width: 0;
 }
 
-.assistant-pane__title {
-  margin: 0 !important;
+.glass-card .glass-card__title h2 {
+  margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--color-fg-primary) !important;
-  display: flex !important;
+  color: var(--color-fg-primary);
+  display: flex;
   align-items: center;
   gap: 0.5rem;
-  visibility: visible !important;
 }
 
-.assistant-pane__subtitle {
-  margin: 0 !important;
+.glass-card .glass-card__caption {
+  margin: 0.25rem 0 0 0;
   font-size: 0.75rem;
-  color: var(--color-fg-muted) !important;
+  color: var(--color-fg-muted);
   font-weight: 400;
-  visibility: visible !important;
 }
 
-.assistant-pane__actions {
+.glass-card .glass-card__actions {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 .assistant-pane__status {
   font-size: 0.7rem !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 12px !important;
+  background: rgba(59, 130, 246, 0.15) !important;
+  border: 1px solid rgba(59, 130, 246, 0.25) !important;
+  color: var(--color-accent-primary) !important;
+  font-weight: 500 !important;
 }
 
 .assistant-pane__expand-btn {
@@ -3219,6 +3199,7 @@ main {
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .assistant-pane__expand-btn:hover {
