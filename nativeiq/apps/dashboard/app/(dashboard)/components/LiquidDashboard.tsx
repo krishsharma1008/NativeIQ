@@ -339,3 +339,4 @@ export default function LiquidDashboard({ insights, tasks, approvals, slaMetrics
     </div>
   );
 }
+

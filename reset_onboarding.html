@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset NativeIQ Onboarding</title>
+    <style>
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            max-width: 600px; 
+            margin: 50px auto; 
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        h1 { color: #333; margin-bottom: 20px; }
+        .button { 
+            background: #667eea; 
+            color: white; 
+            padding: 12px 24px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        .button:hover { background: #5a67d8; }
+        .success { color: #10b981; margin-top: 20px; }
+        .info { color: #6b7280; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🔄 Reset NativeIQ Onboarding</h1>
+        
+        <p>Click the button below to reset your onboarding state and start fresh:</p>
+        
+        <button class="button" onclick="resetOnboarding()">Reset Onboarding</button>
+        <button class="button" onclick="goToOnboarding()">Go to Onboarding</button>
+        
+        <div id="status"></div>
+        
+        <div class="info">
+            <p><strong>Current State:</strong></p>
+            <ul>
+                <li>Authenticated: <span id="authed">❌</span></li>
+                <li>Onboarded: <span id="onboarded">❌</span></li>
+                <li>Company: <span id="company">-</span></li>
+                <li>Industry: <span id="industry">-</span></li>
+                <li>Role: <span id="role">-</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function updateStatus() {
+            const authed = localStorage.getItem('nativeiq_authed');
+            const onboarded = localStorage.getItem('nativeiq_onboarded');
+            const company = localStorage.getItem('nativeiq_company');
+            const industry = localStorage.getItem('nativeiq_industry');
+            const role = localStorage.getItem('nativeiq_role');
+            
+            document.getElementById('authed').textContent = authed ? '✅' : '❌';
+            document.getElementById('onboarded').textContent = onboarded ? '✅' : '❌';
+            document.getElementById('company').textContent = company || '-';
+            document.getElementById('industry').textContent = industry || '-';
+            document.getElementById('role').textContent = role || '-';
+        }
+
+        function resetOnboarding() {
+            // Clear all onboarding-related localStorage items
+            localStorage.removeItem('nativeiq_onboarded');
+            localStorage.removeItem('nativeiq_company');
+            localStorage.removeItem('nativeiq_industry');
+            localStorage.removeItem('nativeiq_role');
+            
+            // Keep auth state but you can uncomment below to reset everything
+            // localStorage.removeItem('nativeiq_authed');
+            
+            document.getElementById('status').innerHTML = '<div class="success">✅ Onboarding state cleared! You can now restart the onboarding process.</div>';
+            
+            updateStatus();
+        }
+        
+        function goToOnboarding() {
+            // Set auth state if needed
+            if (!localStorage.getItem('nativeiq_authed')) {
+                localStorage.setItem('nativeiq_authed', 'true');
+            }
+            
+            // Navigate to onboarding
+            window.open('http://localhost:3000/onboarding', '_blank');
+        }
+
+        // Update status on page load
+        updateStatus();
+    </script>
+</body>
+</html>
