@@ -125,7 +125,7 @@ body::before {
   font-size: 1.1rem;
   letter-spacing: 0.02em;
   font-weight: 600;
-  color: var(--color-fg-primary);
+  color: #f1f5f9 !important;
 }
 
 .glass-card__caption {

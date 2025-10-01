@@ -1,4 +1,5 @@
-:root {
+:root,
+[data-theme="dark"] {
   --color-bg-base: #000813;
   --color-bg-secondary: #0f1419;
   --color-bg-glass: rgba(59, 130, 246, 0.08);

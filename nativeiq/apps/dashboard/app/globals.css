@@ -992,7 +992,7 @@ main {
 .chat-message__sender {
   font-weight: 600;
   font-size: 0.8rem;
-  color: var(--color-fg-primary);
+  color: #f1f5f9 !important;
 }
 
 .chat-message__designation {
@@ -1015,7 +1015,7 @@ main {
   margin: 0;
   font-size: 0.9rem;
   line-height: 1.5;
-  color: var(--color-fg-primary);
+  color: #f1f5f9 !important;
 }
 
 /* Formatted Message Styles */
@@ -3276,6 +3276,14 @@ main {
   background: rgba(59, 130, 246, 0.8);
 }
 
+.assistant-insights-heading {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  padding-top: 0.5rem;
+}
+
 .assistant-insight {
   padding: 1.25rem;
   margin-bottom: 1.5rem;
@@ -3350,7 +3358,7 @@ main {
   margin: 0 0 0.75rem;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-fg-primary);
+  color: #f1f5f9 !important;
   line-height: 1.4;
 }
 
@@ -3358,7 +3366,7 @@ main {
   margin: 0 0 1rem;
   font-size: 0.9rem;
   line-height: 1.6;
-  color: var(--color-fg-primary);
+  color: #f1f5f9 !important;
 }
 
 .assistant-insight__tags {
@@ -3771,14 +3779,14 @@ main {
 
 .key-metric-label {
   font-size: 0.8rem;
-  color: var(--color-fg-muted);
+  color: rgba(255, 255, 255, 0.7) !important;
   margin-bottom: 0.25rem;
 }
 
 .key-metric-value {
   font-size: 1.2rem;
   font-weight: 600;
-  color: var(--color-fg-primary);
+  color: #f1f5f9 !important;
 }
 
 .dashboard-insights-section {
@@ -3829,7 +3837,7 @@ main {
   margin: 0 0 0.5rem;
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--color-fg-primary);
+  color: #f1f5f9 !important;
   line-height: 1.3;
 }
 
@@ -3837,7 +3845,7 @@ main {
   margin: 0;
   font-size: 0.8rem;
   line-height: 1.5;
-  color: var(--color-fg-muted);
+  color: rgba(255, 255, 255, 0.8) !important;
 }
 
 .dashboard-insights-empty {

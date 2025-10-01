@@ -291,6 +291,11 @@ export function AssistantPane({
 
         {/* Insights List */}
         <div className="assistant-pane__content">
+          {/* AI Insights Section Heading */}
+          <div className="dashboard-insights-section">
+            <h4 className="assistant-insights-heading">AI Insights</h4>
+          </div>
+
           {isGenerating && (
             <div className="assistant-insight assistant-insight--generating">
               <div className="assistant-insight__header">
