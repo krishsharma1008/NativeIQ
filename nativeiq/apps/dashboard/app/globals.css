@@ -3107,7 +3107,8 @@ main {
   flex-direction: column;
   min-height: 0;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: grid-row 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.3s ease;
 }
 
 .magical-content__assistant {
@@ -3121,15 +3122,22 @@ main {
 /* Expansion states */
 .magical-content__assistant.expanded {
   grid-row: 1 / 3; /* Take full right side */
+  z-index: 5; /* Bring expanded pane forward */
 }
 
 .magical-content__dashboard.expanded {
   grid-row: 1 / 3; /* Take full right side */
+  z-index: 5; /* Bring expanded pane forward */
 }
 
-.magical-content__assistant.expanded ~ .magical-content__dashboard,
-.magical-content__dashboard.expanded ~ .magical-content__assistant {
-  display: none; /* Hide the other when one is expanded */
+/* When assistant is expanded, hide dashboard */
+.magical-content__right-side:has(.magical-content__assistant.expanded) .magical-content__dashboard {
+  display: none;
+}
+
+/* When dashboard is expanded, hide assistant */
+.magical-content__right-side:has(.magical-content__dashboard.expanded) .magical-content__assistant {
+  display: none;
 }
 
 /* ===== ASSISTANT PANE STYLES ===== */
@@ -3301,6 +3309,11 @@ main {
 
 .assistant-pane__content::-webkit-scrollbar-thumb:hover {
   background: rgba(59, 130, 246, 0.8);
+}
+
+/* Assistant pane content - expanded state */
+.magical-content__assistant.expanded .assistant-pane__content {
+  max-height: calc(100vh - 180px); /* Full viewport minus header/padding */
 }
 
 .assistant-insights-heading {
@@ -3773,6 +3786,11 @@ main {
 .dashboard-pane-content::-webkit-scrollbar-thumb {
   background: rgba(59, 130, 246, 0.6);
   border-radius: 4px;
+}
+
+/* Dashboard pane content - expanded state */
+.magical-content__dashboard.expanded .dashboard-pane-content {
+  max-height: calc(100vh - 180px); /* Full viewport minus header/padding */
 }
 
 .key-metrics-overview {
