@@ -267,34 +267,31 @@ export function AssistantPane({
 
   return (
     <div className={`assistant-pane ${isExpanded ? 'assistant-pane--expanded' : ''} ${className || ""}`}>
-      <GlassCard
-        className="assistant-pane__container"
-        title="🤖 AI Assistant"
-        caption="Real-time business insights for Alex Martinez"
-        actionSlot={
-          <div className="assistant-pane__actions">
-            <Badge tone="info" className="assistant-pane__status">
+      <GlassCard className="assistant-pane__container">
+        {/* Custom Header matching Key Business Insights style */}
+        <div className="assistant-pane-header">
+          <div className="assistant-pane-title-section">
+            <h3 className="assistant-pane-title">Assistant Pane</h3>
+            <p className="assistant-pane-caption">Real-time business insights for Alex Martinez</p>
+          </div>
+          <div className="assistant-pane-controls">
+            <Badge tone="info" className="assistant-pane-status">
               {insights.length} insights
             </Badge>
             {onToggleExpand && (
               <button
                 onClick={onToggleExpand}
-                className="assistant-pane__expand-btn"
+                className="assistant-pane-expand-btn"
                 title={isExpanded ? "Collapse" : "Expand"}
               >
                 {isExpanded ? "⊟" : "⊞"}
               </button>
             )}
           </div>
-        }
-      >
+        </div>
 
         {/* Insights List */}
         <div className="assistant-pane__content">
-          {/* AI Insights Section Heading */}
-          <div className="dashboard-insights-section">
-            <h4 className="assistant-insights-heading">AI Insights</h4>
-          </div>
 
           {isGenerating && (
             <div className="assistant-insight assistant-insight--generating">
@@ -333,9 +330,9 @@ export function AssistantPane({
               
               <h4 className="assistant-insight__title">{insight.title}</h4>
               
-              <div className="assistant-insight__content">
+              <p className="assistant-insight__content">
                 {insight.content}
-              </div>
+              </p>
               
               {insight.tags.length > 0 && (
                 <div className="assistant-insight__tags">
