@@ -17,5 +17,9 @@
   "devDependencies": {
     "turbo": "^1.11.3",
     "vitest": "^0.34.6"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "openai": "^6.2.0"
   }
 }
