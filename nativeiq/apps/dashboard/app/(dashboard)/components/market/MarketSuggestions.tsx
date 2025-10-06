@@ -21,6 +21,7 @@ export default function MarketSuggestions({ onClose }: MarketSuggestionsProps) {
   const [location, setLocation] = useState<string>("US");
   const [loading, setLoading] = useState<boolean>(false);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
 
   const fetchSuggestions = async () => {
     setLoading(true);
@@ -33,6 +34,18 @@ export default function MarketSuggestions({ onClose }: MarketSuggestionsProps) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const toggleCard = (id: string) => {
+    setExpandedCards(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
   };
 
   useEffect(() => {
@@ -74,20 +87,34 @@ export default function MarketSuggestions({ onClose }: MarketSuggestionsProps) {
           </div>
         )}
         {suggestions.map(s => (
-          <div key={s.id} className="recommendation-item" style={{ width: '100%', boxSizing: 'border-box', minHeight: 'auto' }}>
+          <div 
+            key={s.id} 
+            className={`recommendation-item ${expandedCards.has(s.id) ? 'recommendation-item--expanded' : ''}`}
+            style={{ width: '100%', boxSizing: 'border-box', minHeight: 'auto' }}
+          >
             <div className="recommendation-item__header">
               <h4 className="recommendation-item__title">{s.title}</h4>
               <Badge className="deal-priority deal-priority--medium">
                 {Math.round(s.confidence * 100)}%
               </Badge>
             </div>
-            <p className="recommendation-item__description">{s.rationale}</p>
-            <div className="recommendation-actions-grid">
-              <span className="recommendation-impact-label">→</span>
-              <span className="recommendation-impact-value">
-                {s.action}
-              </span>
+            <div className="recommendation-item__content">
+              <p className="recommendation-item__description">{s.rationale}</p>
+              <div className="recommendation-actions-grid">
+                <span className="recommendation-impact-label">→</span>
+                <span className="recommendation-impact-value">
+                  {s.action}
+                </span>
+              </div>
             </div>
+            <button 
+              onClick={() => toggleCard(s.id)}
+              className="recommendation-item__toggle"
+              aria-expanded={expandedCards.has(s.id)}
+              aria-label={expandedCards.has(s.id) ? "Show less" : "Read more"}
+            >
+              {expandedCards.has(s.id) ? "Show less ↑" : "Read more ↓"}
+            </button>
             {s.source && (
               <div className="muted" style={{ fontSize: '0.75rem', marginTop: '0.75rem', opacity: 0.7 }}>
                 Source: {s.source}

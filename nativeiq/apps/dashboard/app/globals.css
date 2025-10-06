@@ -1629,7 +1629,7 @@ main {
   border: 1px solid var(--magical-glass-border);
   border-radius: 12px;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   transition: all 0.3s ease;
   margin-bottom: 1rem;
 }
@@ -1678,6 +1678,65 @@ main {
   font-size: 0.9rem;
   line-height: 1.5;
   color: rgba(255, 255, 255, 0.85);
+}
+
+/* Content wrapper with controlled height for expand/collapse */
+.recommendation-item__content {
+  max-height: 120px;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+
+/* Expanded state */
+.recommendation-item--expanded .recommendation-item__content {
+  max-height: 1000px;
+}
+
+/* Visual indicator for truncated content */
+.recommendation-item__content::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: linear-gradient(transparent, rgba(10, 10, 15, 0.9));
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.recommendation-item--expanded .recommendation-item__content::after {
+  opacity: 0;
+}
+
+/* Toggle button */
+.recommendation-item__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 6px;
+  padding: 0.4rem 0.75rem;
+  color: var(--magical-blue-3);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.recommendation-item__toggle:hover {
+  background: rgba(59, 130, 246, 0.25);
+  border-color: rgba(59, 130, 246, 0.4);
+  transform: translateY(-1px);
+}
+
+.recommendation-item__toggle:active {
+  transform: translateY(0);
 }
 
 .recommendation-actions-grid {
