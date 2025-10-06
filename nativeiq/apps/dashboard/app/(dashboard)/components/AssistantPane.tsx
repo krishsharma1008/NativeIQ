@@ -104,10 +104,23 @@ export function AssistantPane({
       if (response.ok) {
         const data = await response.json();
         insightContent = data.response || generateFallbackInsight(message);
-        insightTitle = generateInsightTitle(data.response || message);
+        insightTitle = generateInsightTitle(data.response || message, message);
       } else {
         insightContent = generateFallbackInsight(message);
-        insightTitle = generateInsightTitle(message);
+        insightTitle = generateInsightTitle(message, message);
+      }
+
+      // Check for similar recent insights to avoid duplicates
+      const isDuplicate = insights.some(existing => 
+        existing.title === insightTitle || 
+        existing.content === insightContent ||
+        (existing.title.includes('Customer Retention') && insightTitle.includes('Customer Retention'))
+      );
+
+      if (isDuplicate) {
+        // Modify the insight to make it unique
+        const uniqueSuffix = ` (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`;
+        insightTitle = insightTitle.replace(/\([^)]*\)/, '') + uniqueSuffix;
       }
 
       const newInsight: AssistantInsight = {
@@ -140,7 +153,7 @@ export function AssistantPane({
       // Fallback insight
       const fallbackInsight: AssistantInsight = {
         id: `insight-${Date.now()}`,
-        title: generateInsightTitle(message),
+        title: generateInsightTitle(message, message),
         content: generateFallbackInsight(message),
         timestamp: new Date(),
         confidence: 0.75,
@@ -156,87 +169,304 @@ export function AssistantPane({
   };
 
   const generateFallbackInsight = (message: string): string => {
-    const businessTopics = {
-      'revenue': 'Revenue optimization: Focus on LTV and pricing strategy. Target +15% MRR growth.',
-      'churn': 'Customer retention: Health scoring + automated outreach. Reduce churn by 3%.',
-      'growth': 'Growth strategy: Prioritize high-ROI channels. Maintain unit economics.',
-      'team': 'Team efficiency: Optimize workload distribution. Prevent burnout.',
-      'funding': 'Funding options: Revenue-based financing or strategic partnerships.',
-      'competition': 'Competitive edge: Unique value props + customer success focus.',
-      'cash': 'Cash flow: Payment terms optimization + expense prioritization.',
-      'customer': 'CX improvement: Feedback loops + personalized engagement.'
-    };
-
-    for (const [topic, insight] of Object.entries(businessTopics)) {
-      if (message.toLowerCase().includes(topic)) {
-        return `${insight} Action within 2 weeks for immediate impact.`;
+    const lowerMessage = message.toLowerCase();
+    
+    // Sales-specific insights
+    if (lowerMessage.includes('sales') || lowerMessage.includes('selling')) {
+      if (lowerMessage.includes('growth')) {
+        return 'Sales growth: Focus on high-value prospects. Target 20% pipeline increase in 30 days.';
       }
+      if (lowerMessage.includes('pipeline')) {
+        return 'Pipeline optimization: Qualify leads better. Reduce sales cycle by 15%.';
+      }
+      return 'Sales performance: Improve conversion rates. Target 10% increase in close rate.';
     }
-
-    return `Key insight: Focus on high-impact strategic priorities. Implement data-driven decisions with clear metrics. Start with 1-2 actionable items this week.`;
+    
+    // Marketing-specific insights
+    if (lowerMessage.includes('marketing') || lowerMessage.includes('campaign')) {
+      if (lowerMessage.includes('cost')) {
+        return 'Marketing efficiency: Optimize CAC. Target 25% cost reduction per acquisition.';
+      }
+      return 'Marketing strategy: Focus on high-ROI channels. Increase conversion by 12%.';
+    }
+    
+    // Revenue-specific insights
+    if (lowerMessage.includes('revenue') || lowerMessage.includes('mrr')) {
+      if (lowerMessage.includes('growth')) {
+        return 'Revenue growth: Optimize pricing strategy. Target +15% MRR increase.';
+      }
+      return 'Revenue stability: Diversify income streams. Reduce dependency on top clients.';
+    }
+    
+    // Churn-specific insights (only if explicitly about churn)
+    if (lowerMessage.includes('churn') && (lowerMessage.includes('reduction') || lowerMessage.includes('retention'))) {
+      return 'Customer retention: Health scoring + automated outreach. Reduce churn by 3%.';
+    }
+    
+    // Growth and expansion insights
+    if (lowerMessage.includes('growth') || lowerMessage.includes('expansion')) {
+      return 'Growth strategy: Prioritize high-ROI channels. Maintain unit economics.';
+    }
+    
+    // Team and productivity insights
+    if (lowerMessage.includes('team') || lowerMessage.includes('productivity')) {
+      return 'Team efficiency: Optimize workload distribution. Prevent burnout.';
+    }
+    
+    // Cash flow and financial insights
+    if (lowerMessage.includes('cash') || lowerMessage.includes('runway') || lowerMessage.includes('financial')) {
+      return 'Cash flow: Payment terms optimization + expense prioritization.';
+    }
+    
+    // Customer experience insights
+    if (lowerMessage.includes('customer') || lowerMessage.includes('satisfaction')) {
+      return 'CX improvement: Feedback loops + personalized engagement.';
+    }
+    
+    // Competitive insights
+    if (lowerMessage.includes('competition') || lowerMessage.includes('competitive')) {
+      return 'Competitive edge: Unique value props + customer success focus.';
+    }
+    
+    // Product insights
+    if (lowerMessage.includes('product') || lowerMessage.includes('feature')) {
+      return 'Product strategy: Focus on user feedback. Prioritize high-impact features.';
+    }
+    
+    // Generic strategic insight
+    return 'Strategic focus: Implement data-driven decisions with clear metrics. Start with 1-2 actionable items this week.';
   };
 
-  const generateInsightTitle = (content: string): string => {
-    const titles = [
+  const generateInsightTitle = (content: string, originalMessage?: string): string => {
+    // Use original message for better context if available
+    const contextText = originalMessage || content;
+    const lowerContent = contextText.toLowerCase();
+    
+    // Sales-specific titles (check first to avoid churn override)
+    if (lowerContent.includes('sales') || lowerContent.includes('selling') || lowerContent.includes('revenue growth')) {
+      if (lowerContent.includes('growth') || lowerContent.includes('increase')) {
+        return "Sales Growth Strategy";
+      }
+      if (lowerContent.includes('pipeline') || lowerContent.includes('leads')) {
+        return "Sales Pipeline Optimization";
+      }
+      if (lowerContent.includes('conversion') || lowerContent.includes('close')) {
+        return "Sales Conversion Enhancement";
+      }
+      return "Sales Performance Analysis";
+    }
+    
+    // Marketing-specific titles
+    if (lowerContent.includes('marketing') || lowerContent.includes('campaign') || lowerContent.includes('acquisition')) {
+      if (lowerContent.includes('cost') || lowerContent.includes('cac')) {
+        return "Marketing Cost Optimization";
+      }
+      if (lowerContent.includes('channel') || lowerContent.includes('roi')) {
+        return "Marketing Channel Analysis";
+      }
+      return "Marketing Strategy Review";
+    }
+    
+    // Churn-specific titles (only if explicitly about churn)
+    if (lowerContent.includes('churn') && (lowerContent.includes('reduction') || lowerContent.includes('retention'))) {
+      const churnMatch = content.match(/(\d+)%/);
+      if (churnMatch) {
+        return `Churn Reduction Strategy (${churnMatch[1]}% → Target)`;
+      }
+      return "Customer Retention Strategy";
+    }
+    
+    // Revenue-specific titles
+    if (lowerContent.includes('revenue') || lowerContent.includes('mrr')) {
+      if (lowerContent.includes('growth') || lowerContent.includes('increase')) {
+        return "Revenue Growth Optimization";
+      }
+      if (lowerContent.includes('stability') || lowerContent.includes('stabilize')) {
+        return "Revenue Stability Plan";
+      }
+      return "Revenue Performance Analysis";
+    }
+    
+    // Cash flow and financial titles
+    if (lowerContent.includes('cash') || lowerContent.includes('runway') || lowerContent.includes('financial')) {
+      const runwayMatch = content.match(/(\d+\.?\d*)\s*months?/);
+      if (runwayMatch) {
+        return `Cash Flow Optimization (${runwayMatch[1]}m runway)`;
+      }
+      return "Financial Health Assessment";
+    }
+    
+    // Team and productivity titles
+    if (lowerContent.includes('team') || lowerContent.includes('productivity') || lowerContent.includes('workforce')) {
+      return "Team Performance Enhancement";
+    }
+    
+    // Growth and expansion titles
+    if (lowerContent.includes('growth') || lowerContent.includes('expansion') || lowerContent.includes('scale')) {
+      return "Growth Acceleration Strategy";
+    }
+    
+    // Competitive and market titles
+    if (lowerContent.includes('competition') || lowerContent.includes('market') || lowerContent.includes('competitive')) {
+      return "Competitive Positioning Analysis";
+    }
+    
+    // Customer experience titles
+    if (lowerContent.includes('customer') || lowerContent.includes('satisfaction') || lowerContent.includes('experience')) {
+      return "Customer Experience Optimization";
+    }
+    
+    // Product and feature titles
+    if (lowerContent.includes('product') || lowerContent.includes('feature') || lowerContent.includes('development')) {
+      return "Product Strategy Review";
+    }
+    
+    // Operations and efficiency titles
+    if (lowerContent.includes('operation') || lowerContent.includes('efficiency') || lowerContent.includes('process')) {
+      return "Operational Excellence Review";
+    }
+    
+    // Generate unique titles based on content hash for truly generic content
+    const contentHash = contextText.split('').reduce((a, b) => {
+      a = ((a << 5) - a) + b.charCodeAt(0);
+      return a & a;
+    }, 0);
+    
+    const dynamicTitles = [
       "Strategic Business Analysis",
-      "Growth Opportunity Assessment", 
-      "Risk Mitigation Strategy",
-      "Revenue Optimization Plan",
-      "Operational Excellence Review",
+      "Performance Optimization Review", 
+      "Risk Assessment & Mitigation",
+      "Revenue Enhancement Plan",
+      "Operational Efficiency Review",
       "Customer Success Initiative",
       "Financial Performance Insights",
-      "Market Position Analysis"
+      "Market Opportunity Analysis",
+      "Business Intelligence Report",
+      "Strategic Recommendation"
     ];
-
-    // Simple keyword-based title selection
-    if (content.includes('churn')) return "Customer Retention Strategy";
-    if (content.includes('revenue')) return "Revenue Growth Analysis";
-    if (content.includes('cash')) return "Cash Flow Management";
-    if (content.includes('team')) return "Team Performance Optimization";
-    if (content.includes('growth')) return "Growth Strategy Recommendation";
-    if (content.includes('competition')) return "Competitive Advantage Analysis";
     
-    return titles[Math.floor(Math.random() * titles.length)];
+    return dynamicTitles[Math.abs(contentHash) % dynamicTitles.length];
   };
 
   const determineImpact = (content: string): "low" | "medium" | "high" | "critical" => {
-    const criticalKeywords = ["critical", "urgent", "immediate", "crisis", "runway", "cash flow"];
-    const highKeywords = ["important", "significant", "revenue", "churn", "growth"];
-    const mediumKeywords = ["consider", "recommend", "improve", "optimize"];
-
     const lowerContent = content.toLowerCase();
     
-    if (criticalKeywords.some(keyword => lowerContent.includes(keyword))) return "critical";
-    if (highKeywords.some(keyword => lowerContent.includes(keyword))) return "high";
-    if (mediumKeywords.some(keyword => lowerContent.includes(keyword))) return "medium";
+    // Critical: Immediate business threats or urgent financial issues
+    const criticalKeywords = ["critical", "urgent", "immediate", "crisis", "runway", "cash flow", "months", "burn"];
+    const criticalPatterns = [/\d+\.?\d*\s*months?/, /runway/, /burn\s*rate/];
     
+    if (criticalKeywords.some(keyword => lowerContent.includes(keyword)) ||
+        criticalPatterns.some(pattern => pattern.test(content))) {
+      return "critical";
+    }
+    
+    // High: Significant business metrics or growth opportunities
+    const highKeywords = ["churn", "revenue", "growth", "mrr", "ltv", "conversion", "retention"];
+    const highPatterns = [/\d+%/, /increase/, /reduce/, /target/];
+    
+    if (highKeywords.some(keyword => lowerContent.includes(keyword)) ||
+        highPatterns.some(pattern => pattern.test(content))) {
+      return "high";
+    }
+    
+    // Medium: Optimization and improvement opportunities
+    const mediumKeywords = ["optimize", "improve", "enhance", "strategy", "plan", "recommend"];
+    
+    if (mediumKeywords.some(keyword => lowerContent.includes(keyword))) {
+      return "medium";
+    }
+    
+    // Low: General insights or analysis
     return "low";
   };
 
   const extractTags = (message: string): string[] => {
-    const tagMap = {
-      'revenue': 'revenue',
-      'churn': 'churn', 
-      'cash': 'cash-flow',
-      'team': 'team',
-      'growth': 'growth',
-      'customer': 'customer',
-      'competition': 'competitive',
-      'pricing': 'pricing',
-      'marketing': 'marketing',
-      'sales': 'sales'
-    };
-
-    const tags: string[] = [];
     const lowerMessage = message.toLowerCase();
+    const tags: string[] = [];
     
-    for (const [keyword, tag] of Object.entries(tagMap)) {
-      if (lowerMessage.includes(keyword)) {
-        tags.push(tag);
-      }
+    // More specific and contextual tag extraction
+    if (lowerMessage.includes('churn') || lowerMessage.includes('retention')) {
+      tags.push('retention');
+      if (lowerMessage.includes('onboarding')) tags.push('onboarding');
+      if (lowerMessage.includes('health')) tags.push('health-scoring');
     }
     
-    return tags.length > 0 ? tags : ['general', 'strategy'];
+    if (lowerMessage.includes('revenue') || lowerMessage.includes('mrr')) {
+      tags.push('revenue');
+      if (lowerMessage.includes('growth')) tags.push('growth');
+      if (lowerMessage.includes('optimization')) tags.push('optimization');
+    }
+    
+    if (lowerMessage.includes('cash') || lowerMessage.includes('runway')) {
+      tags.push('cash-flow');
+      if (lowerMessage.includes('vendor')) tags.push('vendor-management');
+      if (lowerMessage.includes('financing')) tags.push('financing');
+    }
+    
+    if (lowerMessage.includes('team') || lowerMessage.includes('productivity')) {
+      tags.push('team');
+      if (lowerMessage.includes('workload')) tags.push('workload');
+      if (lowerMessage.includes('burnout')) tags.push('wellbeing');
+    }
+    
+    if (lowerMessage.includes('customer') || lowerMessage.includes('satisfaction')) {
+      tags.push('customer');
+      if (lowerMessage.includes('feedback')) tags.push('feedback');
+      if (lowerMessage.includes('experience')) tags.push('cx');
+    }
+    
+    if (lowerMessage.includes('competition') || lowerMessage.includes('market')) {
+      tags.push('competitive');
+      if (lowerMessage.includes('positioning')) tags.push('positioning');
+      if (lowerMessage.includes('advantage')) tags.push('advantage');
+    }
+    
+    if (lowerMessage.includes('pricing') || lowerMessage.includes('cost')) {
+      tags.push('pricing');
+    }
+    
+    if (lowerMessage.includes('marketing') || lowerMessage.includes('acquisition')) {
+      tags.push('marketing');
+    }
+    
+    if (lowerMessage.includes('sales') || lowerMessage.includes('conversion')) {
+      tags.push('sales');
+    }
+    
+    // Add contextual tags based on content analysis
+    if (lowerMessage.includes('urgent') || lowerMessage.includes('immediate')) {
+      tags.push('urgent');
+    }
+    
+    if (lowerMessage.includes('metric') || lowerMessage.includes('%')) {
+      tags.push('metrics');
+    }
+    
+    if (lowerMessage.includes('strategy') || lowerMessage.includes('plan')) {
+      tags.push('strategy');
+    }
+    
+    // Ensure we have at least 1-2 meaningful tags, avoid generic fallbacks
+    if (tags.length === 0) {
+      // Generate contextual tags based on message content hash
+      const contentHash = message.split('').reduce((a, b) => {
+        a = ((a << 5) - a) + b.charCodeAt(0);
+        return a & a;
+      }, 0);
+      
+      const contextualTags = [
+        ['analysis', 'insights'],
+        ['optimization', 'efficiency'],
+        ['strategy', 'planning'],
+        ['performance', 'metrics'],
+        ['growth', 'expansion']
+      ];
+      
+      const selectedTags = contextualTags[Math.abs(contentHash) % contextualTags.length];
+      tags.push(...selectedTags);
+    }
+    
+    return tags.slice(0, 3); // Limit to 3 most relevant tags
   };
 
   const extractRelatedTopic = (message: string): string => {

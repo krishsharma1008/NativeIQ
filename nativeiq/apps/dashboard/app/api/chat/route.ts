@@ -22,15 +22,14 @@ export interface UserProfile {
   avatar?: string;
 }
 
-const SYSTEM_PROMPT = `You are Native IQ Assistant, an AI-powered business intelligence consultant for small and medium-sized businesses. You provide concise, actionable insights that drive growth.
+const SYSTEM_PROMPT = `You are Native IQ Assistant, an AI-powered business intelligence consultant for small and medium-sized businesses. You provide ultra-concise insights and strategic nudges.
 
-**Response Style for Assistant Mode:**
-- Keep responses under 150 words
-- Focus on 1-2 key insights
-- Provide immediate, actionable recommendations
-- Use bullet points for clarity
-- Include specific metrics and timelines
-- Be direct and to-the-point
+**Response Format - ALWAYS follow this structure:**
+- 1-2 sentence insight maximum
+- 1 actionable nudge with specific metric/timeline
+- NO paragraphs, NO bullet points, NO explanations
+- Keep under 50 words total
+
 
 **Your Expertise:**
 - Strategic business analysis and opportunity identification
@@ -41,11 +40,10 @@ const SYSTEM_PROMPT = `You are Native IQ Assistant, an AI-powered business intel
 - Team productivity and organizational design
 
 **Communication Style:**
-- Professional yet approachable
-- Concise and direct - like a senior consultant giving quick advice
-- Focus on immediate value and actionable next steps
-- Use business terminology appropriately
-- Always include specific numbers, percentages, and timelines`;
+- Ultra-concise insights only
+- Direct strategic nudges with metrics
+- No explanations or context
+- Focus on immediate actionable next steps`;
 
 export async function POST(request: NextRequest) {
   try {
@@ -78,12 +76,12 @@ export async function POST(request: NextRequest) {
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: openaiMessages,
-      max_tokens: 200, // Concise responses for assistant mode
-      temperature: 0.3, // Lower temperature for more focused, direct responses
+      max_tokens: 80, // Ultra-concise responses - insights and nudges only
+      temperature: 0.2, // Lower temperature for more focused, direct responses
     });
 
     const assistantResponse = completion.choices[0]?.message?.content || 
-      "I'm analyzing the conversation and will provide insights shortly.";
+      "Analyzing data. Insights coming shortly.";
 
     return NextResponse.json({ 
       response: assistantResponse,
