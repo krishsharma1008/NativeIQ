@@ -3504,58 +3504,57 @@ main {
   overflow: hidden;
 }
 
-.dashboard-pane-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 1.5rem 1rem 1.5rem;
-  flex-shrink: 0;
-}
-
 .dashboard-pane-controls {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 8px;
 }
 
 .dashboard-pane-status {
-  font-size: 0.7rem !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  padding: 4px 10px !important;
 }
 
 .dashboard-pane-expand-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
-  padding: 0.4rem 0.6rem;
-  color: var(--color-fg-primary);
-  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 6px 8px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 16px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .dashboard-pane-expand-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: var(--color-accent-primary);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(59, 130, 246, 0.4);
+  transform: scale(1.05);
 }
 
 .dashboard-pane-market-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
-  padding: 0.4rem 0.8rem;
-  color: var(--color-fg-primary);
-  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 6px;
 }
 
 .dashboard-pane-market-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: var(--color-accent-secondary);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(59, 130, 246, 0.4);
+  transform: scale(1.05);
 }
 
 /* Market Suggestions Panel */

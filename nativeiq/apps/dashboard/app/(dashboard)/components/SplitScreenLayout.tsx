@@ -189,8 +189,7 @@ export default function SplitScreenLayout({ insights, tasks, approvals, slaMetri
               title="Key Business Insights" 
               caption="Executive dashboard for Alex Martinez"
               className="dashboard-pane-card"
-            >
-              <div className="dashboard-pane-header">
+              actionSlot={
                 <div className="dashboard-pane-controls">
                   <Badge tone="info" className="dashboard-pane-status">
                     {liveInsights.length} insights
@@ -210,8 +209,8 @@ export default function SplitScreenLayout({ insights, tasks, approvals, slaMetri
                     {expandedDashboard ? "⊟" : "⊞"}
                   </button>
                 </div>
-              </div>
-              
+              }
+            >
               <div className="dashboard-pane-content">
                 {/* Key Metrics Overview */}
                 <div className="key-metrics-overview">
