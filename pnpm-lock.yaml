@@ -15,15 +15,6 @@ importers:
         specifier: ^6.2.0
         version: 6.9.1
     devDependencies:
-      '@oxc-minify/binding-darwin-arm64':
-        specifier: ^0.98.0
-        version: 0.98.0
-      '@oxc-parser/binding-darwin-arm64':
-        specifier: ^0.98.0
-        version: 0.98.0
-      '@oxc-transform/binding-darwin-arm64':
-        specifier: ^0.98.0
-        version: 0.98.0
       turbo:
         specifier: ^1.11.3
         version: 1.13.4
@@ -43,9 +34,6 @@ importers:
         specifier: ^3.4.21
         version: 3.5.24(typescript@5.9.3)
     devDependencies:
-      '@oxc-parser/binding-darwin-arm64':
-        specifier: ^0.98.0
-        version: 0.98.0
       '@types/node':
         specifier: ^20.12.7
         version: 20.19.25
@@ -1429,13 +1417,6 @@ packages:
     dev: false
     optional: true
 
-  /@oxc-minify/binding-darwin-arm64@0.98.0:
-    resolution: {integrity: sha512-0cwHg1aHGbf8FtR69luAD9Fd7WJr2HyDO12aUC5mQCPdOmfMPFQYYlaziZhyt3gVcgzSq+988GQtDGtcJNU2ow==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    cpu: [arm64]
-    os: [darwin]
-    dev: true
-
   /@oxc-minify/binding-darwin-x64@0.96.0:
     resolution: {integrity: sha512-C5vI0WPR+KPIFAD5LMOJk2J8iiT+Nv65vDXmemzXEXouzfEOLYNqnW+u6NSsccpuZHHWAiLyPFkYvKFduveAUQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -1571,13 +1552,6 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
-
-  /@oxc-parser/binding-darwin-arm64@0.98.0:
-    resolution: {integrity: sha512-joNn+2n+TrDJ79GlwR32LK1gctKIxvSJm93teROFiYEde0Dhq9IZpnxiX9ctw4R2zwmSTf1yistTXIR84UGGDQ==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    cpu: [arm64]
-    os: [darwin]
-    dev: true
 
   /@oxc-parser/binding-darwin-x64@0.96.0:
     resolution: {integrity: sha512-GC8wH1W0XaCLyTeGsmyaMdnItiYQkqfTcn9Ygc55AWI+m11lCjQeoKDIsDCm/QwrKLCN07u3WWWsuPs5ubfXpA==}
@@ -1718,13 +1692,6 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
-
-  /@oxc-transform/binding-darwin-arm64@0.98.0:
-    resolution: {integrity: sha512-y+AuTFZ267EbaG9eMMTEQFTqcQdy+QvhlTeqzlb1o0exUiQ5S+0poPkuDs9rCV1rA26xHZIZ/Mn3yZ0UIVVylQ==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    cpu: [arm64]
-    os: [darwin]
-    dev: true
 
   /@oxc-transform/binding-darwin-x64@0.96.0:
     resolution: {integrity: sha512-xgqxnqhPYH2NYkgbqtnCJfhbXvxIf/pnhF/ig5UBK8PYpCEWIP/cfLpQRQ9DcQnRfuxi7RMIF6LdmB1AiS6Fkg==}

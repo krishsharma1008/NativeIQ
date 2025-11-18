@@ -15,9 +15,6 @@
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
-    "@oxc-minify/binding-darwin-arm64": "^0.98.0",
-    "@oxc-parser/binding-darwin-arm64": "^0.98.0",
-    "@oxc-transform/binding-darwin-arm64": "^0.98.0",
     "turbo": "^1.11.3",
     "vitest": "^0.34.6"
   },
