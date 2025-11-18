@@ -1080,3 +1080,32 @@ Time: 12:25 AM PST
 - Styles integrated into globals.css to match liquid glass theme
 - Env loaded via apps/dashboard/.env.local
 
+
+---
+Date: November 9, 2025
+Time: 01:36 PM IST
+
+## Development Server Restart
+- Restarted `@nativeiq/dashboard` Next.js dev server with `pnpm --filter @nativeiq/dashboard dev`.
+- Confirmed new `next dev --turbo` process (`PID 62512` with child listener `PID 62513`) bound to `http://localhost:3000`.
+- Verified application responsiveness via `curl http://localhost:3000` returning HTTP 200.
+- Noted other local services occupying ports 3000/3001; ensured dashboard child process retained port 3000 without conflicts.
+
+---
+Date: November 9, 2025
+Time: 01:41 PM IST
+
+## Alternate Port Launch (8085)
+- Started a second `@nativeiq/dashboard` dev instance with `PORT=8085 pnpm --filter @nativeiq/dashboard dev` from `/Users/krishsharma/Desktop/poc/deepnative`.
+- Confirmed `next-server` process (`PID 66852`) is listening on `http://localhost:8085`.
+- Verified HTTP health check via `curl http://localhost:8085` (200 OK).
+- Retained original dev server on port 3000; documented concurrent multi-port setup for local verification.
+
+---
+Date: November 9, 2025
+Time: 01:47 PM IST
+
+## Port 8085 Shutdown
+- Terminated Next.js dev instance on port 8085 (`kill 66852`).
+- Verified application process removed; residual `Google Chrome Helper` still holds port 8085 for network service, no dashboard listeners remain.
+- Confirmed `curl http://localhost:8085` now fails (port occupied by Chrome only), ensuring our app is stopped.

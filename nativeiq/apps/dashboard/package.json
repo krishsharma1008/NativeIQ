@@ -4,32 +4,30 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev --turbo",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest"
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "start": "nuxt preview",
+    "lint": "eslint . --ext .ts,.js,.vue",
+    "typecheck": "nuxt typecheck",
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@nativeiq/types": "workspace:*",
-    "@nativeiq/ui": "workspace:*",
-    "@nativeiq/utils": "workspace:*",
-    "@tanstack/react-query": "^5.35.0",
-    "framer-motion": "^10.16.4",
-    "next": "^14.2.4",
-    "next-themes": "^0.3.0",
-    "openai": "^5.22.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "nuxt": "^3.11.2",
+    "vue": "^3.4.21"
   },
   "devDependencies": {
+    "@oxc-parser/binding-darwin-arm64": "^0.98.0",
     "@types/node": "^20.12.7",
-    "@types/react": "^18.2.47",
-    "@types/react-dom": "^18.2.18",
+    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "@typescript-eslint/parser": "^7.8.0",
+    "@vitejs/plugin-vue": "^5.0.4",
     "eslint": "^8.57.0",
-    "eslint-config-next": "^14.2.4",
+    "eslint-plugin-vue": "^9.23.0",
+    "jsdom": "^24.0.0",
     "typescript": "^5.4.5",
-    "vitest": "^0.34.6"
+    "vitest": "^0.34.6",
+    "vue-eslint-parser": "^9.4.3",
+    "vue-tsc": "^2.0.19"
   }
 }

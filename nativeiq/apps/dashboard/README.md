@@ -1,6 +1,12 @@
-# NativeIQ Dashboard
+# NativeIQ Dashboard (Nuxt)
 
-Next.js 14 dashboard implementing the NativeIQ AI canvas: insights, approvals, live metrics, and command palette.
+Vue 3 + Nuxt 3 rewrite of the NativeIQ operator dashboard so every surface (insights, assistant, approvals, market trials) lives on one cohesive page. The new experience layers in the requested UX touches:
+
+- **Barlow** as the global font stack
+- First-run onboarding placeholder that queues team invites before the workspace goes live
+- Light/Dark themes with a toggle that persists to `localStorage`
+- Assistant pane auto-scroll fixes and differentiated chat bubble colors
+- Sharper cards plus dynamic `Native &lt;Company&gt;` hero copy
 
 ## Getting Started
 
@@ -9,18 +15,18 @@ pnpm install
 pnpm --filter @nativeiq/dashboard dev
 ```
 
-The dashboard imports shared tokens and components from `@nativeiq/ui`. Update mock data in `lib/mock-data.ts` and swap providers with real tRPC clients when backends are ready.
-
 ## Scripts
 
-- `pnpm --filter @nativeiq/dashboard dev` — run the Next.js development server
-- `pnpm --filter @nativeiq/dashboard build` — compile production assets
-- `pnpm lint` — run monorepo lint pipeline (Next.js + custom rules)
-- `pnpm --filter @nativeiq/dashboard test` — execute Vitest unit tests (placeholder)
+- `pnpm --filter @nativeiq/dashboard dev` – Nuxt dev server with hot module reloading
+- `pnpm --filter @nativeiq/dashboard build` – production build
+- `pnpm --filter @nativeiq/dashboard start` – preview the production build locally
+- `pnpm --filter @nativeiq/dashboard lint` – run ESLint against `.vue`/`.ts`
+- `pnpm --filter @nativeiq/dashboard typecheck` – Nuxt type checking (vue-tsc)
+- `pnpm --filter @nativeiq/dashboard test` – Vitest (jsdom) placeholder
 
 ## Architecture Notes
 
-- Dark-first theme with glassmorphism tokens defined in `@nativeiq/ui`
-- Command palette (`⌘K`) available everywhere via `@nativeiq/ui/CommandPalette`
-- High-contrast and reduced-motion toggles persist per visitor via `ThemeProvider`
-- Mock data is colocated in `lib/` while awaiting live MCP + service integrations
+- Nuxt auto-imports composables (see `composables/useTheme.ts`) so shared state is trivial
+- Sections live under `sections/` to keep the `pages/` entry lean; “atoms” (e.g., `ThemeToggle`) sit in `components/`
+- Global tokens + theming live in `assets/css/main.css`
+- Mock data remains in `lib/mock-data.ts` until live services are ready
