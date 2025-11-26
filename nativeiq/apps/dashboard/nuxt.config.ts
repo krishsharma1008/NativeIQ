@@ -3,6 +3,7 @@ import { defineNuxtConfig } from "nuxt/config";
 export default defineNuxtConfig({
   ssr: false,
   devtools: { enabled: false },
+  modules: ["@nuxtjs/supabase"],
   css: ["@/assets/css/main.css"],
   components: [
     {
@@ -42,5 +43,25 @@ export default defineNuxtConfig({
   },
   nitro: {
     preset: "node-server"
+  },
+  devServer: {
+    port: 3001
+  },
+  supabase: {
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_KEY,
+    redirect: true,
+    redirectOptions: {
+      login: "/login",
+      callback: "/confirm",
+      exclude: ["/login", "/signup", "/forgot-password"]
+    }
+  },
+  runtimeConfig: {
+    openaiApiKey: process.env.OPENAI_API_KEY,
+    public: {
+      supabaseUrl: process.env.SUPABASE_URL,
+      supabaseKey: process.env.SUPABASE_KEY
+    }
   }
 });

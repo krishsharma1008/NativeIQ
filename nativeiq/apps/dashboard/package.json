@@ -13,7 +13,9 @@
   },
   "dependencies": {
     "@nativeiq/types": "workspace:*",
+    "@nuxtjs/supabase": "^1.4.0",
     "nuxt": "^3.11.2",
+    "openai": "^4.67.0",
     "vue": "^3.4.21"
   },
   "devDependencies": {
